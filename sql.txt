@@ -1,8 +1,10 @@
 gctf_user
+
 id
 username text
 passwd text
 email text
+register_time
 problems
 solved_problems
 score
