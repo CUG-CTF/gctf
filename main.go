@@ -1,9 +1,17 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	. "./v1"
+)
 
 func main() {
-	gctfRoute:=gin.Default()
+	gCTFRoute := gin.Default()
+	v1:=gCTFRoute.Group("v1")
+	{
+		v1.POST("user",UserInfo)
 
-	gctfRoute.Run(":8080")
+	}
+
+	gCTFRoute.Run(":8080")
 }
