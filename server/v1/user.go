@@ -12,9 +12,7 @@ func Logout(c *gin.Context)  {
 func Register(c *gin.Context){
 
 }
-func GetProblem(c *gin.Context)  {
 
-}
 
 func GetScore(c *gin.Context){
 
