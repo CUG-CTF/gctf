@@ -2,18 +2,22 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"strconv"
 )
 
-const GCTF_Debug=false
+var GCTF_DEBUG = false
 
-func init()  {
+func init() {
 	if i:=os.Getenv("GCTF_DEBUG");i!=""{
-		GCTF_Debug=strconv.A
+		b,e:=strconv.ParseBool(i)
+		if e!=nil{
+			log.Fatal("GCTF_DEBUG must be true/false or 0/1")
+		}
+		GCTF_DEBUG=b
+		fmt.Println("You are in product mode")
+	} else{
+		log.Println("Your are in DEBUG mode!")
 	}
-	fmt.Println("123")
-	fmt.Println(debug)
-}
-func main() {
-
 }
