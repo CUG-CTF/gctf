@@ -25,7 +25,7 @@ func init() {
 	}
 }
 
-func main() {
+func init() {
 	err:=GctfDataManage.Ping()
 	if err!=nil{
 		log.Fatal("error",err.Error())
@@ -36,7 +36,7 @@ func main() {
 
 	}
 	err=GctfDataManage.CreateTables(User{},Problems{},UserProblems{},Hints{},Tag{},Teams{})
-	//GctfDataManage.DropTables(User{},Problems{},UserProblems{},Hints{},Tag{},Teams{})
+	//GctfDataManage.DropTables("gctf_user","gctf_problems","gctf_user_problems","gctf_hints","gctf_tag","gctf_teams")
 	checkerr(err)
 }
 
