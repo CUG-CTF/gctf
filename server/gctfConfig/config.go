@@ -8,7 +8,7 @@ import (
 )
 
 var GCTF_DEBUG = true
-var GCTF_DB_NAME = ""
+var GCTF_DB_DRIVER = ""
 var GCTF_DB_STRING = ""
 
 func init() {
@@ -22,9 +22,9 @@ func init() {
 	} else {
 		log.Println("Your are in DEBUG mode!")
 	}
-	GCTF_DB_NAME = os.Getenv("GCTF_DB_NAME")
-	if GCTF_DB_NAME ==""{
-		log.Fatalln("You must set env GCTF_DB_NAME")
+	GCTF_DB_DRIVER = os.Getenv("GCTF_DB_DRIVER")
+	if GCTF_DB_DRIVER ==""{
+		log.Fatalln("You must set env GCTF_DB_DRIVER & GCTF_DB_STRING")
 	}
 
 	GCTF_DB_STRING = os.Getenv("GCTF_DB_STRING")

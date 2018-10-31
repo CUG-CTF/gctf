@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"../gctfConfig"
@@ -17,33 +17,35 @@ func init() {
 	// go-xorm is used to create database engine
 	// engine, err := xorm.NewEngine(driverName, dataSourceName)
 	// data
-	GctfDataManage, err = xorm.NewEngine(gctfConfig.GCTF_DB_NAME, gctfConfig.GCTF_DB_STRING)
+	GctfDataManage, err = xorm.NewEngine(gctfConfig.GCTF_DB_DRIVER, gctfConfig.GCTF_DB_STRING)
 	// All table name have a gctf_ prefix
+
 	// prefix，前缀
 	tbMapper := core.NewPrefixMapper(core.GonicMapper{}, "gctf_")
+
 	// fix problem_I_D to problem_id
 	GctfDataManage.SetColumnMapper(core.GonicMapper{})
 	GctfDataManage.SetTableMapper(tbMapper)
+
+	// Ping is test the database is alive
+	err = GctfDataManage.Ping()
 	if err != nil {
 		log.Fatal("database connect error:", err.Error())
 	}
-}
-
-func init() {
-	// Ping is test the database is alive
-	err := GctfDataManage.Ping()
-	if err != nil {
-		log.Fatal("error", err.Error())
-	}
 	if gctfConfig.GCTF_DEBUG {
-		GctfDataManage.ShowSQL(true)
-		GctfDataManage.Logger().SetLevel(core.LOG_DEBUG)
+		//GctfDataManage.ShowSQL(true)
+		//GctfDataManage.Logger().SetLevel(core.LOG_DEBUG)
 
 	}
 	// this is create lots of tables?
 	err = GctfDataManage.CreateTables(User{}, Problems{}, UserProblems{}, Hints{}, Tag{}, Teams{})
 	// GctfDataManage.DropTables("gctf_user","gctf_problems","gctf_user_problems","gctf_hints","gctf_tag","gctf_teams")
 	checkerr(err)
+}
+
+func init() {
+
+
 }
 
 func checkerr(err error) {
