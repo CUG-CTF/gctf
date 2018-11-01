@@ -102,4 +102,5 @@ type Teams struct {
 	Name   string `xorm:"unique"`
 	Member string
 	Banned bool // if true this team can't login
+	Token string // team token
 }
