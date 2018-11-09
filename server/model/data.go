@@ -45,7 +45,6 @@ func init() {
 
 func init() {
 
-
 }
 
 func checkerr(err error) {
@@ -55,14 +54,15 @@ func checkerr(err error) {
 }
 
 type User struct {
-	Id             int64  `xorm:"autoincr pk 'id'"`
-	Username       string `xorm:"unique"`
+	Id             int64     `xorm:"autoincr pk 'id'"`
+	Username       string    `xorm:"unique"`
 	Password       string
 	Email          string    `xorm:"unique"`
 	RegisterTime   time.Time `xorm:"created notnull"`
 	ProblemsID     string
 	SolvedProblems string
 	Score          int
+	IsAdmin        bool      `xorm:"'is_admin'"`
 }
 
 type Problems struct {
@@ -71,13 +71,13 @@ type Problems struct {
 	Description string // Problem Description
 	Value       int    // score
 	Category    string
-	Hidden      bool   // should be problem hide?
-	Location    string // saved physical position
+	Hidden      bool                      // should be problem hide?
+	Location    string                    // saved physical position
 	Scale       int    `xorm:"default 0"` // score scale when each answer submit
 }
 
 type UserProblems struct {
-	Id         int64  `xorm:"autoincr pk 'id'"`
+	Id         int64 `xorm:"autoincr pk 'id'"`
 	UserId     int64  // foreignkey gctf_user.id
 	Location   string // problem net location
 	Flag       string
@@ -101,6 +101,6 @@ type Teams struct {
 	Id     int64  `xorm:"autoincr pk 'id'"`
 	Name   string `xorm:"unique"`
 	Member string
-	Banned bool // if true this team can't login
-	Token string // team token
+	Banned bool   // if true this team can't login
+	Token  string // team token
 }

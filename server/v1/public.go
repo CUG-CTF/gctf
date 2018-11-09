@@ -8,9 +8,25 @@ import (
 	"net/http"
 )
 
+<<<<<<< HEAD
+=======
+/*
+[
+{
+"score": "15",
+"username": "cug2"
+},
+{
+"score": "10",
+"username": "cug1"
+}
+]
+ */
+>>>>>>> upstream/master
 func GetUsersRank(c *gin.Context) {
 	data, err := model.GctfDataManage.Query("select `username`,`score` from gctf_user limit 50 ")
 	var userName_scores []map[string]string
+
 	for x := range data {
 		userName_score := make(map[string]string)
 		userName_score["username"] = string(data[x]["username"])
