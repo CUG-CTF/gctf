@@ -1,13 +1,12 @@
 package v1
 
 import (
-	"github.com/gin-gonic/gin"
-	"../model"
 	"../gctfConfig"
+	"../model"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 )
-
 
 func GetUsersRank(c *gin.Context) {
 	data, err := model.GctfDataManage.Query("select `username`,`score` from gctf_user limit 50 ")

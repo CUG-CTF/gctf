@@ -2,8 +2,8 @@ package main
 
 import (
 	. "./v1"
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"time"
 )
 
