@@ -1,11 +1,7 @@
 package main
 
 import (
-<<<<<<< HEAD
-	. "./v1"
-=======
 	"./v1"
->>>>>>> upstream/master
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"time"
