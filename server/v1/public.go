@@ -1,9 +1,9 @@
 package v1
 
 import (
-	"github.com/gin-gonic/gin"
-	"../model"
 	"../gctfConfig"
+	"../model"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 )
