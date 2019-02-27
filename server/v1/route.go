@@ -5,6 +5,8 @@ import "github.com/gin-gonic/gin"
 func ConfigRoute(r *gin.RouterGroup) {
 	userRoute := r.Group("/user")
 	{
+		userRoute.Use(checkSessionMiddleware)
+
 		userRoute.POST("/", UserInfo)
 		userRoute.POST("/logout", Logout)
 		userRoute.POST("/get_problem_list", GetProblemList)
@@ -26,6 +28,7 @@ func ConfigRoute(r *gin.RouterGroup) {
 		]
 		}
 		 */
+		adminRoute.Use(checkSessionMiddleware)
 		adminRoute.POST("/add_users", AddUsers)
 		adminRoute.POST("/change_user_passwd", ChangeUserPasswd)
 		//set user Problem one by one
@@ -41,4 +44,5 @@ func ConfigRoute(r *gin.RouterGroup) {
 	}
 	r.GET("/get_users_rank", GetUsersRank)
 	r.POST("/get_teams_rank", GetTeamsRank)
+	r.POST("/login",Login)
 }

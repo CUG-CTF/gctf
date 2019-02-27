@@ -4,6 +4,15 @@ run init.sh to get depents
 
 still working...
 
+## database
+1. start local env :`docker run -d  -p 5432:5432 -e POSTGRES_PASSWORD=Ilovecug666  postgres 
+`
+2. set env vars
+```sh 
+GCTF_DB_DRIVER=postgres
+GCTF_DB_STRING=postgres://postgres:Ilovecug666@dev.cugctf.top:5432/gctf?sslmode\=disable
+```
+
 ## some resource
 
 <https://docs.docker.com/engine/swarm/manage-nodes/>  

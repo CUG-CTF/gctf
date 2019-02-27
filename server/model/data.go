@@ -30,12 +30,11 @@ func init() {
 	// Ping is test the database is alive
 	err = GctfDataManage.Ping()
 	if err != nil {
-		log.Fatal("database connect error:", err.Error())
+		log.Fatal("database connect error: ", err.Error())
 	}
 	if gctfConfig.GCTF_DEBUG {
 		//GctfDataManage.ShowSQL(true)
 		//GctfDataManage.Logger().SetLevel(core.LOG_DEBUG)
-
 	}
 	// this is create lots of tables?
 	err = GctfDataManage.CreateTables(User{}, Problems{}, UserProblems{}, Hints{}, Tag{}, Teams{})
@@ -43,9 +42,6 @@ func init() {
 	checkerr(err)
 }
 
-func init() {
-
-}
 
 func checkerr(err error) {
 	if err != nil {
