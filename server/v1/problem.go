@@ -18,6 +18,7 @@ func StartProblem(c *gin.Context) {
 		log.Println("user/StartProblem: errot to bind json" + err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to start bind json"})
 	}
+	//TODO:insert DB start container
 	//c,err:=gctfConfig.DockerClient.ContainerCreate(context.Background(),nil,nil,nil,"")
 }
 
