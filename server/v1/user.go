@@ -75,10 +75,10 @@ func Login(c *gin.Context) {
 		lr.Message = "login ok"
 		lr.Token = "gctf"
 		WriteSession(l.User, lr.Token)
-		c.JSON(http.StatusOK, &lr)
 		c.SetCookie("username", l.User, 36000, "/", conf.GCTF_DOMAIN, false, true)
-	}else {
-		c.JSON(http.StatusForbidden,gin.H{"msg":"password error!"})
+		c.JSON(http.StatusOK, &lr)
+	} else {
+		c.JSON(http.StatusForbidden, gin.H{"msg": "password error!"})
 	}
 
 }
@@ -89,24 +89,24 @@ func Logout(c *gin.Context) {
 func Register(c *gin.Context) {
 	//TODO: add email verify,write in db
 	var newUser model.User
-	err:=c.BindJSON(&newUser)
-	if err!=nil{
-		c.JSON(http.StatusBadRequest,gin.H{"msg":"bad request"+err.Error()})
+	err := c.BindJSON(&newUser)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "bad request" + err.Error()})
 	}
 	//username := c.PostForm("username")
 	//password := c.PostForm("password")
 	hashed, err := b.GenerateFromPassword([]byte(newUser.Password), b.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error encrypt password!"+err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error encrypt password!" + err.Error()})
 		return
 	}
-	newUser.Password=base64.StdEncoding.EncodeToString(hashed)
-	_,err=model.GctfDataManage.Insert(&newUser)
-	if err!=nil{
-		log.Println("register error:"+err.Error())
-		c.JSON(http.StatusInternalServerError,gin.H{"msg":"error to insert to db!"})
+	newUser.Password = base64.StdEncoding.EncodeToString(hashed)
+	_, err = model.GctfDataManage.Insert(&newUser)
+	if err != nil {
+		log.Println("register error:" + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to insert to db!"})
 	}
-	c.JSON(http.StatusOK,gin.H{"msg":"OK"})
+	c.JSON(http.StatusOK, gin.H{"msg": "OK"})
 }
 
 func GetScore(c *gin.Context) {
