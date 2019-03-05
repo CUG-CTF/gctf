@@ -40,3 +40,7 @@ func GetUsersRank(c *gin.Context) {
 
 func GetTeamsRank(c *gin.Context) {
 }
+
+func GctfPing(c *gin.Context){
+	c.JSON(http.StatusOK,gin.H{"msg":"pong!"})
+}

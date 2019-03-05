@@ -51,6 +51,7 @@ func checkerr(err error) {
 
 type User struct {
 	Id             int64  `xorm:"autoincr pk 'id'"`
+	//seem unique not work
 	Username       string `xorm:"unique"`
 	Password       string
 	Email          string    `xorm:"unique"`
@@ -60,7 +61,7 @@ type User struct {
 	Score          int
 	IsAdmin        bool `xorm:"'is_admin'"`
 }
-
+// Problem table, should Location is fixed?
 type Problems struct {
 	Id          int64  `xorm:"autoincr pk 'id'"`
 	Name        string `xorm:"unique"`

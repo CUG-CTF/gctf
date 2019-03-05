@@ -2,6 +2,7 @@ package gctfConfig
 
 import (
 	"fmt"
+	"github.com/docker/docker/client"
 	"log"
 	"os"
 	"strconv"
@@ -12,10 +13,15 @@ var (
 	GCTF_DB_DRIVER string
 	GCTF_DB_STRING string
 	GCTF_DOMAIN string
+	//TODO: add docker server manager,else use local docker unix sock
+	GCTF_DOCKERS string
+	//only in dev
+	DockerClient *client.Client
 )
 
 func init() {
 	initCreateDir()
+	initConnetDocker()
 	if i := os.Getenv("GCTF_DEBUG"); i != "" {
 		b, e := strconv.ParseBool(i)
 		if e != nil {
@@ -29,10 +35,10 @@ func init() {
 	GCTF_DB_DRIVER = os.Getenv("GCTF_DB_DRIVER")
 	GCTF_DB_STRING = os.Getenv("GCTF_DB_STRING")
 	GCTF_DOMAIN    = os.Getenv("GCTF_DOMAIN")
+	GCTF_DOCKERS   = os.Getenv("GCTF_DOCKERS")
 	if GCTF_DB_DRIVER == "" {
 		log.Fatalln("You must set env GCTF_DB_DRIVER & GCTF_DB_STRING")
 	}
-
 	if GCTF_DB_STRING == "" {
 		log.Fatalln("You must set a env GCTF_DB_STRING")
 	}
@@ -45,8 +51,19 @@ func init() {
 	if GCTF_DEBUG {
 		log.Println("conf.db message:", GCTF_DB_STRING)
 	}
+	if GCTF_DOCKERS==""{
+		log.Println("You are not set DOCKER server,will us local unix sock")
+	}
 }
 
 func initCreateDir() {
 	_ = os.Mkdir("problem", os.ModeDir)
+}
+
+func initConnetDocker(){
+	var err error
+	DockerClient,err=client.NewClientWithOpts(client.WithVersion("1.39"))
+	if err!=nil{
+		log.Fatal("docker server:error connect to local unix sock")
+	}
 }
