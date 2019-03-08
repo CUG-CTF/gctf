@@ -3,10 +3,12 @@ package v1
 import (
 	"../gctfConfig"
 	"../model"
+	"bytes"
 	"context"
-	"github.com/docker/docker/api/types"
+	"github.com/fsouza/go-dockerclient"
 	"github.com/gin-gonic/gin"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -27,6 +29,7 @@ func SetUserProblem(c *gin.Context) {
 func RandomAllUsersProblem(c *gin.Context) {
 
 }
+// 比赛或者训练
 func ChangeGCTFMode(c *gin.Context) {
 
 }
@@ -63,7 +66,7 @@ func UploadProblem(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to read upload file", "err": err.Error()})
 	}
-	build_result := buildUploadProblem(f)
+	build_result := buildUploadProblem(f,name)
 	if build_result != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to build image: " + build_result.Error()})
 	}
@@ -93,24 +96,33 @@ func DeleteProblem(c *gin.Context) {
 
 }
 
-func buildUploadProblem(f io.Reader) error {
+func buildUploadProblem(f io.Reader,name string) error {
 	//TODO: This context must set timeout
 	dockerContext := context.Background()
-	rsp, err := gctfConfig.DockerClient.ImageBuild(dockerContext, f, types.ImageBuildOptions{})
+	buildOutput:=bytes.NewBuffer(nil)
+	bo:=docker.BuildImageOptions{
+		Context:dockerContext,
+		InputStream:f,
+		OutputStream:buildOutput,
+		Name:name,
+	}
+	err := gctfConfig.DockerClient.BuildImage(bo)
 	if err != nil {
 		log.Println("admin/Upload Problem:error to build a problem")
 		return err
 	}
-	for true {
-		_, err = rsp.Body.Read(nil)
-		if err == io.EOF {
-			return nil
-		}
-		if err != nil {
-			return err
-		}
+	_,err=ioutil.ReadAll(buildOutput)
 
-	}
+	//for true {
+	//	_, err = buildOutput.Read(nil)
+	//	if err == io.EOF {
+	//		return nil
+	//	}
+	//	if err != nil {
+	//		return err
+	//	}
+	//
+	//}
 
 	return err
 }

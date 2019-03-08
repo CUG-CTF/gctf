@@ -2,7 +2,7 @@ package gctfConfig
 
 import (
 	"fmt"
-	"github.com/docker/docker/client"
+	"github.com/fsouza/go-dockerclient"
 	"log"
 	"os"
 	"strconv"
@@ -16,7 +16,7 @@ var (
 	//TODO: add docker server manager,else use local docker unix sock
 	GCTF_DOCKERS string
 	//only in dev
-	DockerClient *client.Client
+	DockerClient *docker.Client
 )
 
 func init() {
@@ -62,7 +62,7 @@ func initCreateDir() {
 
 func initConnetDocker() {
 	var err error
-	DockerClient, err = client.NewClientWithOpts(client.WithVersion("1.39"), client.WithHost("http://u30.cugctf.top:2376"))
+	DockerClient, err = docker.NewClient("unix:///var/run/docker.sock")
 	if err != nil {
 		log.Fatal("docker server:error connect to local unix sock")
 	}
