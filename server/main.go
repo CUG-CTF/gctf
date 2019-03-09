@@ -4,6 +4,7 @@ import (
 	"./v1"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"log"
 	"time"
 )
 
@@ -17,5 +18,8 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 	v1.ConfigRoute(gCTFRoute.Group("/v1"))
-	gCTFRoute.Run(":8081")
+	err:=gCTFRoute.Run(":8081")
+	if err!=nil{
+		log.Fatal(err)
+	}
 }

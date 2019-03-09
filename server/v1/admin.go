@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"../gctfConfig"
+	"../config"
 	"../model"
 	"bytes"
 	"context"
@@ -106,7 +106,7 @@ func buildUploadProblem(f io.Reader,name string) error {
 		OutputStream:buildOutput,
 		Name:name,
 	}
-	err := gctfConfig.DockerClient.BuildImage(bo)
+	err := config.DockerClient.BuildImage(bo)
 	if err != nil {
 		log.Println("admin/Upload Problem:error to build a problem")
 		return err

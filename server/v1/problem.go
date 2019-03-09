@@ -1,10 +1,11 @@
 package v1
 
 import (
-	"../gctfConfig"
+	"../config"
 	"../model"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -38,7 +39,7 @@ func StartProblem(c *gin.Context) {
 	}
 	up.UserId = u.Id
 	up.ProblemsId = sp.Problem_ID
-	//c,err:=gctfConfig.DockerClient.ContainerCreate(context.Background(),nil,nil,nil,"")
+	//c,err:=config.DockerClient.ContainerCreate(context.Background(),nil,nil,nil,"")
 }
 func startContainer(name string) error {
 	createOpt := docker.CreateContainerOptions{
@@ -57,7 +58,8 @@ func startContainer(name string) error {
 			},
 		},
 	}
-	rsp, err := gctfConfig.DockerClient.CreateContainer(createOpt)
+	rsp, err := config.DockerClient.CreateContainer(createOpt)
+	ioutil.ReadAll()
 }
 func GetProblemList(c *gin.Context) {
 

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"../gctfConfig"
+	. "../config"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
 	_ "github.com/lib/pq"
@@ -17,7 +17,7 @@ func init() {
 	// go-xorm is used to create database engine
 	// engine, err := xorm.NewEngine(driverName, dataSourceName)
 	// data
-	GctfDataManage, err = xorm.NewEngine(gctfConfig.GCTF_DB_DRIVER, gctfConfig.GCTF_DB_STRING)
+	GctfDataManage, err = xorm.NewEngine(GCTFConfig.GCTF_DB_DRIVER, GCTFConfig.GCTF_DB_STRING)
 	// All table name have a gctf_ prefix
 
 	// prefix，前缀
@@ -32,7 +32,7 @@ func init() {
 	if err != nil {
 		log.Fatal("database connect error: ", err.Error())
 	}
-	if gctfConfig.GCTF_DEBUG {
+	if GCTFConfig.GCTF_DEBUG {
 		//GctfDataManage.ShowSQL(true)
 		//GctfDataManage.Logger().SetLevel(core.LOG_DEBUG)
 	}

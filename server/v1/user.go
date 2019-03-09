@@ -1,7 +1,7 @@
 package v1
 
 import (
-	conf "../gctfConfig"
+	conf "../config"
 	"../model"
 	"encoding/base64"
 	"fmt"
