@@ -1,7 +1,7 @@
 package v1
 
 import (
-	conf "../config"
+	. "../config"
 	"../model"
 	"encoding/base64"
 	"fmt"
@@ -75,7 +75,7 @@ func Login(c *gin.Context) {
 		lr.Message = "login ok"
 		lr.Token = "gctf"
 		WriteSession(l.User, lr.Token)
-		c.SetCookie("username", l.User, 36000, "/", conf.GCTF_DOMAIN, false, true)
+		c.SetCookie("username", l.User, 36000, "/", GCTFConfig.GCTF_DOMAIN, false, true)
 		c.JSON(http.StatusOK, &lr)
 	} else {
 		c.JSON(http.StatusForbidden, gin.H{"msg": "password error!"})

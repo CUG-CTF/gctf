@@ -1,26 +1,27 @@
 package config
 
 import (
+	. "../utils"
 	"encoding/json"
-	"github.com/fsouza/go-dockerclient"
 	"io/ioutil"
 	"log"
 	"os"
 )
 
 type gctfConfig struct {
-	GCTF_DEBUG     bool `json:"debug"`
+	GCTF_DEBUG     bool   `json:"debug"`
 	GCTF_DB_DRIVER string `json:"database_type"`
 	GCTF_DB_STRING string `json:"database_address"`
-	GCTF_DOMAIN    string  `json:"domain_name"`
+	GCTF_DOMAIN    string `json:"domain_name"`
 	//TODO: add docker server manager,else use local docker unix sock
 	GCTF_DOCKERS []string `json:"docker_servers"`
 }
+
 var (
-	GCTFConfig gctfConfig
+	GCTFConfig *gctfConfig
 	//TODO: add docker server manager,else use local docker unix sock
-	//only in dev2
-	DockerClient *docker.Client
+	//only in dev
+	GCTFDockerManager DockerManager
 )
 
 func init() {
@@ -52,28 +53,29 @@ func init() {
 	}
 }
 
-func readConf(){
-	confFile,err:=os.Open("conf.json")
-	if err!=nil{
-		log.Fatal("error to open conf file"+err.Error())
+func readConf() {
+	confFile, err := os.Open("conf.json")
+	if GCTFConfig == nil {
+		GCTFConfig = new(gctfConfig)
 	}
-	conf,err:=ioutil.ReadAll(confFile)
-	if err!=nil{
-		log.Fatal("error to read conf file"+err.Error())
+	if err != nil {
+		log.Fatal("error to open conf file" + err.Error())
 	}
-	err=json.Unmarshal(conf,&GCTFConfig)
-	if err!=nil{
-		log.Fatal("error to read json conf"+err.Error())
+	conf, err := ioutil.ReadAll(confFile)
+	if err != nil {
+		log.Fatal("error to read conf file" + err.Error())
+	}
+	err = json.Unmarshal(conf, GCTFConfig)
+	if err != nil {
+		log.Fatal("error to read json conf" + err.Error())
 	}
 }
 func createDir() {
+	//TODO:add problem's dir option
 	_ = os.Mkdir("problem", os.ModeDir)
 }
 
 func connetDocker() {
-	var err error
-	DockerClient, err = docker.NewClient("unix:///var/run/docker.sock")
-	if err != nil {
-		log.Fatal("docker server:error connect to local unix sock")
-	}
+	//TODO:select docker manager type
+	GCTFDockerManager = NewPollingDockerClient()
 }

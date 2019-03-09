@@ -1,0 +1,7 @@
+{
+  "debug": true,
+  "database_type": "postgres",
+  "database_address": "postgres://postgres:Ilovecug666@localhost:5432/gctf?sslmode=disable",
+  "domain_name": "127.0.0.1",
+  "docker_servers": ["unix:///var/run/docker.sock"]
+}
