@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"../config"
 	"../model"
 	"bytes"
 	"context"
@@ -29,10 +28,12 @@ func SetUserProblem(c *gin.Context) {
 func RandomAllUsersProblem(c *gin.Context) {
 
 }
+
 // 比赛或者训练
 func ChangeGCTFMode(c *gin.Context) {
 
 }
+
 //admin upload a problem which include Dockerfile,  only support tar,tar.gz format
 func UploadProblem(c *gin.Context) {
 	name := c.PostForm("name")
@@ -48,7 +49,7 @@ func UploadProblem(c *gin.Context) {
 	value, err := strconv.Atoi(form_value)
 	if err != nil {
 		log.Println("Upload problem's value error:" + err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"msg":"wrong value!"+err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "wrong value!" + err.Error()})
 	}
 
 	//Todo: security check to vars
@@ -66,7 +67,7 @@ func UploadProblem(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to read upload file", "err": err.Error()})
 	}
-	build_result := buildUploadProblem(f,name)
+	build_result := buildUploadProblem(f, name)
 	if build_result != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to build image: " + build_result.Error()})
 	}
@@ -75,8 +76,8 @@ func UploadProblem(c *gin.Context) {
 	p.Value = value
 	p.Description = description
 	p.Name = name
-	p.Hidden=false
-	p.Location="problems/" + category + "/" + filename
+	p.Hidden = false
+	p.Location = "problems/" + category + "/" + filename
 	_, err = model.GctfDataManage.Insert(p)
 	if err != nil {
 		log.Println("db problem insert error:", err.Error())
@@ -96,22 +97,23 @@ func DeleteProblem(c *gin.Context) {
 
 }
 
-func buildUploadProblem(f io.Reader,name string) error {
+func buildUploadProblem(f io.Reader, name string) error {
 	//TODO: This context must set timeout
 	dockerContext := context.Background()
-	buildOutput:=bytes.NewBuffer(nil)
-	bo:=docker.BuildImageOptions{
-		Context:dockerContext,
-		InputStream:f,
-		OutputStream:buildOutput,
-		Name:name,
+	buildOutput := bytes.NewBuffer(nil)
+	bo := docker.BuildImageOptions{
+		Context:      dockerContext,
+		InputStream:  f,
+		OutputStream: buildOutput,
+		Name:         name,
 	}
-	err := config.DockerClient.BuildImage(bo)
+	cli := model.GCTFDockerManager.GetDockerClient()
+	err := cli.BuildImage(bo)
 	if err != nil {
 		log.Println("admin/Upload Problem:error to build a problem")
 		return err
 	}
-	_,err=ioutil.ReadAll(buildOutput)
+	_, err = ioutil.ReadAll(buildOutput)
 
 	//for true {
 	//	_, err = buildOutput.Read(nil)

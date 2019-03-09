@@ -1,7 +1,6 @@
 package v1
 
 import (
-	. "../config"
 	"../model"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -33,7 +32,7 @@ func GetUsersRank(c *gin.Context) {
 	}
 	//d,_:=json.Marshal(userName_scores)
 	c.JSON(http.StatusOK, userName_scores)
-	if GCTFConfig.GCTF_DEBUG && err != nil {
+	if model.GCTFConfig.GCTF_DEBUG && err != nil {
 		log.Fatal("error to get userscore", data)
 	}
 

@@ -1,7 +1,6 @@
 package v1
 
 import (
-	. "../config"
 	"../model"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gin-gonic/gin"
@@ -61,7 +60,7 @@ func startContainer(name string) (*docker.PortBinding, error) {
 			},
 		},
 	}
-	cli := GCTFDockerManager.GetDockerClient()
+	cli := model.GCTFDockerManager.GetDockerClient()
 	rsp, err := cli.CreateContainer(createOpt)
 	if err != nil {
 		return nil, err

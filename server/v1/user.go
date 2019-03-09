@@ -1,8 +1,7 @@
 package v1
 
 import (
-	. "../config"
-	"../model"
+	. "../model"
 	"encoding/base64"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -58,7 +57,7 @@ func Login(c *gin.Context) {
 	}
 	var l login
 	err := c.BindJSON(&l)
-	if conf.GCTF_DEBUG {
+	if GCTFConfig.GCTF_DEBUG {
 		log.Println("user login:" + fmt.Sprintf("%#v", l))
 	}
 	if err != nil {
@@ -88,7 +87,7 @@ func Logout(c *gin.Context) {
 
 func Register(c *gin.Context) {
 	//TODO: add email verify,write in db
-	var newUser model.User
+	var newUser User
 	err := c.BindJSON(&newUser)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "bad request" + err.Error()})
@@ -101,7 +100,7 @@ func Register(c *gin.Context) {
 		return
 	}
 	newUser.Password = base64.StdEncoding.EncodeToString(hashed)
-	_, err = model.GctfDataManage.Insert(&newUser)
+	_, err = GctfDataManage.Insert(&newUser)
 	if err != nil {
 		log.Println("register error:" + err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to insert to db!"})

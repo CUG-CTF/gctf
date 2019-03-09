@@ -1,56 +1,15 @@
 package model
 
 import (
-	. "../config"
-	"github.com/go-xorm/core"
+	"github.com/fsouza/go-dockerclient"
 	"github.com/go-xorm/xorm"
 	_ "github.com/lib/pq"
-	"log"
 	"time"
 )
 
-// meaning GctfDataMange is a database
-var GctfDataManage *xorm.Engine
-
-func init() {
-	var err error
-	// go-xorm is used to create database engine
-	// engine, err := xorm.NewEngine(driverName, dataSourceName)
-	// data
-	GctfDataManage, err = xorm.NewEngine(GCTFConfig.GCTF_DB_DRIVER, GCTFConfig.GCTF_DB_STRING)
-	// All table name have a gctf_ prefix
-
-	// prefix，前缀
-	tbMapper := core.NewPrefixMapper(core.GonicMapper{}, "gctf_")
-
-	// fix problem_I_D to problem_id
-	GctfDataManage.SetColumnMapper(core.GonicMapper{})
-	GctfDataManage.SetTableMapper(tbMapper)
-
-	// Ping is test the database is alive
-	err = GctfDataManage.Ping()
-	if err != nil {
-		log.Fatal("database connect error: ", err.Error())
-	}
-	if GCTFConfig.GCTF_DEBUG {
-		//GctfDataManage.ShowSQL(true)
-		//GctfDataManage.Logger().SetLevel(core.LOG_DEBUG)
-	}
-	// this is create lots of tables?
-	err = GctfDataManage.CreateTables(User{}, Problems{}, UserProblems{}, Hints{}, Tag{}, Teams{})
-	// GctfDataManage.DropTables("gctf_user","gctf_problems","gctf_user_problems","gctf_hints","gctf_tag","gctf_teams")
-	checkerr(err)
-}
-
-
-func checkerr(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
 
 type User struct {
-	Id             int64  `xorm:"autoincr pk 'id'"`
+	Id int64 `xorm:"autoincr pk 'id'"`
 	//seem unique not work
 	Username       string `xorm:"unique"`
 	Password       string
@@ -61,6 +20,7 @@ type User struct {
 	Score          int
 	IsAdmin        bool `xorm:"'is_admin'"`
 }
+
 // Problem table, should Location is fixed?
 type Problems struct {
 	Id          int64  `xorm:"autoincr pk 'id'"`
@@ -101,3 +61,24 @@ type Teams struct {
 	Banned bool   // if true this team can't login
 	Token  string // team token
 }
+
+type GCTFConfigStruct struct {
+	GCTF_DEBUG     bool   `json:"debug"`
+	GCTF_DB_DRIVER string `json:"database_type"`
+	GCTF_DB_STRING string `json:"database_address"`
+	GCTF_DOMAIN    string `json:"domain_name"`
+	//TODO: add docker server manager,else use local docker unix sock
+	GCTF_DOCKERS []string `json:"docker_servers"`
+}
+type DockerManager interface {
+	GetDockerClient() *docker.Client
+}
+var (
+	GCTFConfig *GCTFConfigStruct
+	//TODO: add docker server manager,else use local docker unix sock
+	//only in dev
+	GCTFDockerManager DockerManager
+)
+
+//database manager
+var GctfDataManage *xorm.Engine
