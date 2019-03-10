@@ -6,9 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"time"
 )
 
 func StartProblem(c *gin.Context) {
+	//TODO: add more debug msg
+	now:=time.Now().Add(10*time.Minute)
 	type UserStartProblem struct {
 		Username   string `json:"username"`
 		Token      string `json:"token"`
@@ -37,10 +40,22 @@ func StartProblem(c *gin.Context) {
 	problemAddr, err := startContainer(p.Name)
 	if err != nil {
 		log.Println("user/StartProblem: error to start a  problem(name =" + p.Name + ") " + err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "errot to start a problem"})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to start a problem"})
 	}
-	//TODO: intert to UserProblems DB
-	problemAddr = problemAddr
+	var up model.UserProblems
+	up.Location=problemAddr.HostIP+":"+problemAddr.HostPort
+	up.UserId=u.Id
+	up.ProblemsId=p.Id
+	_,err=model.GctfDataManage.Insert(&up)
+	if err!=nil{
+		log.Printf("user/StartProblem error to insert to db: "+err.Error())
+		c.JSON(http.StatusInternalServerError,gin.H{"msg":"error to insert db"})
+	}
+	c.JSON(http.StatusOK,gin.H{
+		"host_ip":problemAddr.HostIP,
+		"host_port":problemAddr.HostPort,
+		"expired:":now.Format("15:04:05"),
+	})
 }
 func startContainer(name string) (*docker.PortBinding, error) {
 	createOpt := docker.CreateContainerOptions{
