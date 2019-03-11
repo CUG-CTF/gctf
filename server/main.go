@@ -2,8 +2,8 @@ package main
 
 import (
 	. "./model"
-	"./v1"
 	. "./utils"
+	"./v1"
 	"encoding/json"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -69,7 +69,7 @@ func init() {
 		//GctfDataManage.Logger().SetLevel(core.LOG_DEBUG)
 	}
 	// this is create lots of tables?
-	err = GctfDataManage.CreateTables(User{}, Problems{}, UserProblems{}, Hints{}, Tag{}, Teams{})
+	err = GctfDataManage.CreateTables(User{}, Problems{}, UserProblems{}, Hints{}, Teams{})
 	// GctfDataManage.DropTables("gctf_user","gctf_problems","gctf_user_problems","gctf_hints","gctf_tag","gctf_teams")
 	checkerr(err)
 }
@@ -94,7 +94,7 @@ func readConf() {
 	}
 	err = json.Unmarshal(conf, GCTFConfig)
 	if err != nil {
-		log.Fatal("error to read json conf"  + err.Error())
+		log.Fatal("error to read json conf" + err.Error())
 	}
 }
 func createDir() {
@@ -107,6 +107,7 @@ func connetDocker() {
 	GCTFDockerManager = NewPollingDockerClient()
 }
 
+//Todo:更多单元测试
 func main() {
 	gCTFRoute := gin.Default()
 	gCTFRoute.Use(cors.New(cors.Config{

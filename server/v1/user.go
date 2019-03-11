@@ -8,6 +8,7 @@ import (
 	b "golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
+	"time"
 )
 
 func UserInfo(c *gin.Context) {
@@ -49,6 +50,14 @@ func checkSessionMiddleware(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, "/login")
 	c.Abort()
 }
+func checkAdmin(c *gin.Context) {
+	username, _ := c.Cookie("username")
+	if username != "gctf" {
+		c.JSON(http.StatusForbidden, gin.H{"msg": "you are not admin"})
+		c.Abort()
+	}
+	c.Next()
+}
 func Login(c *gin.Context) {
 	//TODO :add json require
 	type login struct {
@@ -69,28 +78,53 @@ func Login(c *gin.Context) {
 		Token   string `json:"Token"`
 	}
 	var lr loginReturn
-
-	if l.User == "gctf" && l.Password == "gctf" {
-		lr.Message = "login ok"
-		lr.Token = "gctf"
-		WriteSession(l.User, lr.Token)
-		c.SetCookie("username", l.User, 36000, "/", GCTFConfig.GCTF_DOMAIN, false, true)
-		c.JSON(http.StatusOK, &lr)
-	} else {
-		c.JSON(http.StatusForbidden, gin.H{"msg": "password error!"})
+	var u User
+	u.Username = l.User
+	h, err := GctfDataManage.Get(&u)
+	if err != nil {
+		log.Println("user/login: error to get user info", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "login error"})
+	}
+	if !h {
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "login error"})
+	}
+	hashPasswd, err := base64.StdEncoding.DecodeString(u.Password)
+	if err != nil {
+		log.Println("user/login:error to decode passwd", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "login error"})
+		return
 	}
 
+	err = b.CompareHashAndPassword(hashPasswd, []byte(l.Password))
+	if err == nil {
+		lr.Message = "login ok"
+
+		userToken, err := b.GenerateFromPassword([]byte(u.Username+time.Now().String()), b.DefaultCost)
+		if err != nil {
+			log.Println("user/login: error to gen token:", u, err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to gen token"})
+			return
+		}
+		lr.Token = base64.StdEncoding.EncodeToString(userToken)
+		WriteSession(l.User, lr.Token)
+		c.SetCookie("username", l.User, 36000, "/", GCTFConfig.GCTF_DOMAIN, false, true)
+		c.SetCookie("token", lr.Token, 36000, "/", GCTFConfig.GCTF_DOMAIN, false, true)
+		c.JSON(http.StatusOK, &lr)
+	} else {
+		c.JSON(http.StatusForbidden, gin.H{"msg": "login error"})
+	}
 }
 func Logout(c *gin.Context) {
 	//TODO: del session from K-V
 }
 
 func Register(c *gin.Context) {
-	//TODO: add email verify,write in db
+	//TODO: add email verify
 	var newUser User
 	err := c.BindJSON(&newUser)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "bad request" + err.Error()})
+		return
 	}
 	//username := c.PostForm("username")
 	//password := c.PostForm("password")
@@ -104,18 +138,22 @@ func Register(c *gin.Context) {
 	if err != nil {
 		log.Println("register error:" + err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to insert to db!"})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{"msg": "OK"})
 }
 
+//TODO:获取分数
 func GetScore(c *gin.Context) {
 
 }
 
+//Todo: 提交flag
 func SubmitFlag(c *gin.Context) {
 
 }
 
+//TODO:用户删除题目实例
 func UserDelProblem(c *gin.Context) {
 
 }

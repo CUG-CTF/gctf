@@ -14,17 +14,19 @@ import (
 	"strconv"
 )
 
-//TODO: problems sync with database
+//添加用户
 func AddUsers(c *gin.Context) {
 
 }
+//改密码
 func ChangeUserPasswd(c *gin.Context) {
 
 }
-
+// 单独设置题目
 func SetUserProblem(c *gin.Context) {
 
 }
+//随机出题
 func RandomAllUsersProblem(c *gin.Context) {
 
 }
@@ -98,7 +100,8 @@ func DeleteProblem(c *gin.Context) {
 }
 
 func buildUploadProblem(f io.Reader, name string) error {
-	//TODO: This context must set timeout
+	//TODO: context必须设置一个timeout
+	//TODO:在所有docker server上创建题目
 	dockerContext := context.Background()
 	buildOutput := bytes.NewBuffer(nil)
 	bo := docker.BuildImageOptions{
@@ -128,3 +131,5 @@ func buildUploadProblem(f io.Reader, name string) error {
 
 	return err
 }
+
+//TODO：需要增加数据校验，导入导出功能

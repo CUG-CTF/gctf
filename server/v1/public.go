@@ -31,17 +31,20 @@ func GetUsersRank(c *gin.Context) {
 		userName_scores = append(userName_scores, userName_score)
 	}
 	//d,_:=json.Marshal(userName_scores)
-	c.JSON(http.StatusOK, userName_scores)
 	if model.GCTFConfig.GCTF_DEBUG && err != nil {
-		log.Fatal("error to get userscore", data)
+		log.Println("public/GetUserRank:error to get userscore", data)
+		c.JSON(http.StatusInternalServerError,gin.H{"msg":"error to get user score"})
+		return
 	}
-
+	c.JSON(http.StatusOK, userName_scores)
 }
 
-//Team mode
+//Team Mode?
 func GetTeamsRank(c *gin.Context) {
+
 }
 
+//ping
 func GctfPing(c *gin.Context){
 	c.JSON(http.StatusOK,gin.H{"msg":"pong!"})
 }

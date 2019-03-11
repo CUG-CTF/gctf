@@ -7,11 +7,10 @@ import (
 	"time"
 )
 
-
 type User struct {
-	Id int64 `xorm:"autoincr pk 'id'"`
+	Id int64 `xorm:"autoincr 'id'"`
 	//seem unique not work
-	Username       string `xorm:"unique"`
+	Username       string `xorm:"unique pk"`
 	Password       string
 	Email          string    `xorm:"unique"`
 	RegisterTime   time.Time `xorm:"created notnull"`
@@ -35,10 +34,11 @@ type Problems struct {
 
 type UserProblems struct {
 	Id         int64 `xorm:"autoincr pk 'id'"`
-	UserId     int64  // foreignkey gctf_user.id
-	Location   string // problem net location
+	UserId     int64 `xorm:"unique(user_problem)"` //foreignkey gctf_user.id
+	Location   string                              // problem net location
 	Flag       string
-	ProblemsId int64 // foreignkey gctf_problems.id
+	ProblemsId int64 `xorm:"unique(user_problem)"` //foreignkey gctf_problems.id
+	Expired    time.Time                           //过期时间
 }
 
 type Hints struct {
@@ -48,11 +48,11 @@ type Hints struct {
 	Cost       int // cost score to get hint
 }
 
-type Tag struct {
-	Id         int64 `xorm:"autoincr pk 'id'"`
-	ProblemsId int64 //foreignkey gctf_problems.id
-	Tag        string
-}
+//type Tag struct {
+//	Id         int64 `xorm:"autoincr pk 'id'"`
+//	ProblemsId int64 //foreignkey gctf_problems.id
+//	Tag        string
+//}
 
 type Teams struct {
 	Id     int64  `xorm:"autoincr pk 'id'"`
@@ -63,16 +63,19 @@ type Teams struct {
 }
 
 type GCTFConfigStruct struct {
-	GCTF_DEBUG     bool   `json:"debug"`
-	GCTF_DB_DRIVER string `json:"database_type"`
-	GCTF_DB_STRING string `json:"database_address"`
-	GCTF_DOMAIN    string `json:"domain_name"`
+	GCTF_DEBUG         bool   `json:"debug"`
+	GCTF_MODE          bool   `json:"mode"` //true is contest
+	GCTF_EXPLIRED_TIME int  `json:"expired_time"` // 过期时间，单位分钟
+	GCTF_DB_DRIVER     string `json:"database_type"`
+	GCTF_DB_STRING     string `json:"database_address"`
+	GCTF_DOMAIN        string `json:"domain_name"`
 	//TODO: add docker server manager,else use local docker unix sock
 	GCTF_DOCKERS []string `json:"docker_servers"`
 }
 type DockerManager interface {
 	GetDockerClient() *docker.Client
 }
+
 var (
 	GCTFConfig *GCTFConfigStruct
 	//TODO: add docker server manager,else use local docker unix sock
