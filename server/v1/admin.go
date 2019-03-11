@@ -14,52 +14,55 @@ import (
 	"strconv"
 )
 
-//添加用户
+//TODO:添加用户
 func AddUsers(c *gin.Context) {
 
 }
 
-//改密码
+//TODO:改密码
 func ChangeUserPasswd(c *gin.Context) {
 
 }
 
-// 单独设置题目
+// 单独设置一个user的题目
 func SetUserProblem(c *gin.Context) {
 
 }
 
-//随机出题
+//随机出题给所有用户，应该的比赛模式中使用
 func RandomAllUsersProblem(c *gin.Context) {
 
 }
 
-// 比赛或者训练
+// 比赛或者训练模式
 func ChangeGCTFMode(c *gin.Context) {
 
 }
 
 //admin upload a problem which include Dockerfile,  only support tar,tar.gz format
 func UploadProblem(c *gin.Context) {
+	//得到form post的参数
 	name := c.PostForm("name")
 	category := c.PostForm("category")
 	description := c.PostForm("description")
 	form_value := c.PostForm("value")
 	flag := c.PostForm("flag")
+	//传过来的tar 或者tar.gz
 	problem, err := c.FormFile("problem")
+
 	if err != nil {
 		log.Println("Upload problem error:" + err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "upload file erroe"})
 		return
 	}
+	//题目分数应该是整数
 	value, err := strconv.Atoi(form_value)
 	if err != nil {
 		log.Println("Upload problem's value error:" + err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "wrong value!" + err.Error()})
 	}
 
-	//Todo: security check to vars
-
+	//Todo: 对post过来的参数进行安全检查和过滤
 	err = os.MkdirAll("problems/"+category, os.ModePerm)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to create folder" + "problems/" + category, "err": err.Error()})
@@ -100,6 +103,7 @@ func ChangeProblem(c *gin.Context) {
 }
 
 //TODO:delete a problem from disk and db
+//先查db，然后删镜像，最后删磁盘文件
 func DeleteProblem(c *gin.Context) {
 
 }
@@ -137,4 +141,4 @@ func buildUploadProblem(f io.Reader, name string) error {
 	return err
 }
 
-//TODO：需要增加数据校验，导入导出功能
+//TODO:增加备份和恢复功能
