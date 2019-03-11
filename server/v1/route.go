@@ -46,5 +46,5 @@ func ConfigRoute(r *gin.RouterGroup) {
 	r.POST("/get_teams_rank", GetTeamsRank)
 	r.POST("/login", Login)
 	r.POST("/register", Register)
-	r.Any("/ping", GctfPing)
+	r.GET("/ping", GctfPing)
 }
