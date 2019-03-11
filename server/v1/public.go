@@ -19,7 +19,7 @@ import (
 }
 ]
  */
- //User mode
+//User mode
 func GetUsersRank(c *gin.Context) {
 	data, err := model.GctfDataManage.Query("select `username`,`score` from gctf_user limit 50 ")
 	var userName_scores []map[string]string
@@ -33,7 +33,7 @@ func GetUsersRank(c *gin.Context) {
 	//d,_:=json.Marshal(userName_scores)
 	if model.GCTFConfig.GCTF_DEBUG && err != nil {
 		log.Println("public/GetUserRank:error to get userscore", data)
-		c.JSON(http.StatusInternalServerError,gin.H{"msg":"error to get user score"})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to get user score"})
 		return
 	}
 	c.JSON(http.StatusOK, userName_scores)
@@ -45,6 +45,6 @@ func GetTeamsRank(c *gin.Context) {
 }
 
 //ping
-func GctfPing(c *gin.Context){
-	c.JSON(http.StatusOK,gin.H{"msg":"pong!"})
+func GctfPing(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"msg": "pong!"})
 }

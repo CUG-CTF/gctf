@@ -14,7 +14,7 @@ type User struct {
 	Password       string
 	Email          string    `xorm:"unique"`
 	RegisterTime   time.Time `xorm:"created notnull"`
-	ProblemsID     string
+	ProblemsId     string
 	SolvedProblems string
 	Score          int
 	IsAdmin        bool `xorm:"'is_admin'"`
@@ -29,9 +29,11 @@ type Problems struct {
 	Category    string
 	Hidden      bool                   // should be problem hide?
 	Location    string                 // saved physical position
+	Flag        string                 //默认flag，(不开启动态flag)
 	Scale       int `xorm:"default 0"` // score scale when each answer submit
 }
 
+// 每启动一个problem 实例，就写入一条数据，如果flag为动态，那么就要填入Flag字段
 type UserProblems struct {
 	Id         int64 `xorm:"autoincr pk 'id'"`
 	UserId     int64 `xorm:"unique(user_problem)"` //foreignkey gctf_user.id
@@ -64,8 +66,8 @@ type Teams struct {
 
 type GCTFConfigStruct struct {
 	GCTF_DEBUG         bool   `json:"debug"`
-	GCTF_MODE          bool   `json:"mode"` //true is contest
-	GCTF_EXPLIRED_TIME int  `json:"expired_time"` // 过期时间，单位分钟
+	GCTF_MODE          bool   `json:"mode"`         //true is contest
+	GCTF_EXPLIRED_TIME int    `json:"expired_time"` // 过期时间，单位分钟
 	GCTF_DB_DRIVER     string `json:"database_type"`
 	GCTF_DB_STRING     string `json:"database_address"`
 	GCTF_DOMAIN        string `json:"domain_name"`

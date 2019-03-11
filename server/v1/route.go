@@ -29,6 +29,7 @@ func ConfigRoute(r *gin.RouterGroup) {
 		}
 		 */
 		adminRoute.Use(checkSessionMiddleware)
+		adminRoute.Use(checkAdmin)
 		adminRoute.POST("/add_users", AddUsers)
 		adminRoute.POST("/change_user_passwd", ChangeUserPasswd)
 		//set user Problem one by one
@@ -43,7 +44,7 @@ func ConfigRoute(r *gin.RouterGroup) {
 	}
 	r.GET("/get_users_rank", GetUsersRank)
 	r.POST("/get_teams_rank", GetTeamsRank)
-	r.POST("/login",Login)
-	r.POST("/register",Register)
-	r.Any("/ping",GctfPing)
+	r.POST("/login", Login)
+	r.POST("/register", Register)
+	r.Any("/ping", GctfPing)
 }

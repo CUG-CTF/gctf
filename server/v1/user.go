@@ -50,6 +50,9 @@ func checkSessionMiddleware(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, "/login")
 	c.Abort()
 }
+
+//
+//TODO：检查是否为admin(查数据库)
 func checkAdmin(c *gin.Context) {
 	username, _ := c.Cookie("username")
 	if username != "gctf" {
@@ -59,7 +62,7 @@ func checkAdmin(c *gin.Context) {
 	c.Next()
 }
 func Login(c *gin.Context) {
-	//TODO :add json require
+	//TODO :增加json校验，不允许为空
 	type login struct {
 		User     string `json:"username"`
 		Password string `json:"password"`

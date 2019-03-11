@@ -1,4 +1,5 @@
 package utils
+
 // from https://gist.github.com/indraniel/1a91458984179ab4cf80
 
 import (
@@ -8,6 +9,7 @@ import (
 	"log"
 	"os"
 )
+
 func ExtractTarGz(gzipStream io.Reader) {
 	uncompressedStream, err := gzip.NewReader(gzipStream)
 	if err != nil {

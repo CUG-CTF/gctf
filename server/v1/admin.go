@@ -18,14 +18,17 @@ import (
 func AddUsers(c *gin.Context) {
 
 }
+
 //改密码
 func ChangeUserPasswd(c *gin.Context) {
 
 }
+
 // 单独设置题目
 func SetUserProblem(c *gin.Context) {
 
 }
+
 //随机出题
 func RandomAllUsersProblem(c *gin.Context) {
 
@@ -42,6 +45,7 @@ func UploadProblem(c *gin.Context) {
 	category := c.PostForm("category")
 	description := c.PostForm("description")
 	form_value := c.PostForm("value")
+	flag := c.PostForm("flag")
 	problem, err := c.FormFile("problem")
 	if err != nil {
 		log.Println("Upload problem error:" + err.Error())
@@ -79,6 +83,7 @@ func UploadProblem(c *gin.Context) {
 	p.Description = description
 	p.Name = name
 	p.Hidden = false
+	p.Flag = flag
 	p.Location = "problems/" + category + "/" + filename
 	_, err = model.GctfDataManage.Insert(p)
 	if err != nil {
@@ -89,12 +94,12 @@ func UploadProblem(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"msg": "upload succeed!"})
 }
 
-//change a problem's information
+//TODO:change a problem's information
 func ChangeProblem(c *gin.Context) {
 
 }
 
-//delete a problem from disk and db
+//TODO:delete a problem from disk and db
 func DeleteProblem(c *gin.Context) {
 
 }
