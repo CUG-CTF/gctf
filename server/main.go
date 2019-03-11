@@ -118,7 +118,8 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 	v1.ConfigRoute(gCTFRoute.Group("/v1"))
-	err := gCTFRoute.Run(":8081")
+
+	err := gCTFRoute.Run(":"+GCTFConfig.GCTF_PORT)
 	if err != nil {
 		log.Fatal(err)
 	}

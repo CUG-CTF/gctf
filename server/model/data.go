@@ -65,6 +65,7 @@ type Teams struct {
 }
 
 type GCTFConfigStruct struct {
+	GCTF_PORT          string `json:"port"`
 	GCTF_DEBUG         bool   `json:"debug"`
 	GCTF_MODE          bool   `json:"mode"`         //true is contest
 	GCTF_EXPLIRED_TIME int    `json:"expired_time"` // 过期时间，单位分钟
