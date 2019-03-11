@@ -2,6 +2,7 @@ package v1
 
 import (
 	"../model"
+	"context"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -100,11 +101,15 @@ func StartProblem(c *gin.Context) {
 	})
 }
 func startContainer(name string) (*docker.PortBinding, error) {
+	//TODO:设置1分钟测试用，实际开发要替换为配置文件中设置的时间
+	context_timeout, _ := context.WithTimeout(context.Background(), 1*time.Minute)
+	//context_timeout,_:=context.WithTimeout(context.Background(),time.Duration(model.GCTFConfig.GCTF_PROBLEM_TIMEOUT)*time.Minute)
 	createOpt := docker.CreateContainerOptions{
 		Config: &docker.Config{
 			Image: name,
 		},
-		//TODO:web题目多端口处理、增加过期时间（可以利用context？）
+		Context: context_timeout,
+		//TODO:web题目多端口处理
 		HostConfig: &docker.HostConfig{
 			PublishAllPorts: true,
 			PortBindings: map[docker.Port][]docker.PortBinding{

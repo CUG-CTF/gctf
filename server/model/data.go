@@ -65,13 +65,14 @@ type Teams struct {
 }
 
 type GCTFConfigStruct struct {
-	GCTF_PORT          string `json:"port"`
-	GCTF_DEBUG         bool   `json:"debug"`
-	GCTF_MODE          bool   `json:"mode"`         //true is contest
-	GCTF_EXPLIRED_TIME int    `json:"expired_time"` // 过期时间，单位分钟
-	GCTF_DB_DRIVER     string `json:"database_type"`
-	GCTF_DB_STRING     string `json:"database_address"`
-	GCTF_DOMAIN        string `json:"domain_name"`
+	GCTF_PORT            string `json:"port"`
+	GCTF_DEBUG           bool   `json:"debug"`
+	GCTF_MODE            bool   `json:"mode"` //true is contest
+	GCTF_PROBLEM_TIMEOUT int    `json:"problem_create_timeout"`
+	GCTF_EXPLIRED_TIME   int    `json:"expired_time"` // 过期时间，单位分钟
+	GCTF_DB_DRIVER       string `json:"database_type"`
+	GCTF_DB_STRING       string `json:"database_address"`
+	GCTF_DOMAIN          string `json:"domain_name"`
 	//TODO: add docker server manager,else use local docker unix sock
 	GCTF_DOCKERS []string `json:"docker_servers"`
 }
