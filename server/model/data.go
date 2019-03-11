@@ -21,16 +21,17 @@ type User struct {
 }
 
 // Problem table, should Location is fixed?
+//TODO:unique invalid?
 type Problems struct {
 	Id          int64  `xorm:"autoincr pk 'id'"`
-	Name        string `xorm:"unique"`
+	Name        string `xorm:"unique(name_location)"`
 	Description string // Problem Description
 	Value       int    // score
 	Category    string
-	Hidden      bool                   // should be problem hide?
-	Location    string                 // saved physical position
-	Flag        string                 //默认flag，(不开启动态flag)
-	Scale       int `xorm:"default 0"` // score scale when each answer submit
+	Hidden      bool                                  // should be problem hide?
+	Location    string `xorm:"unique(name_location)"` // saved physical position
+	Flag        string                                //默认flag，(不开启动态flag)
+	Scale       int `xorm:"default 0"`                // score scale when each answer submit
 }
 
 // 每启动一个problem 实例，就写入一条数据，如果flag为动态，那么就要填入Flag字段
