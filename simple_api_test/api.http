@@ -1,4 +1,5 @@
-http://127.0.0.1:8081/v1/ping
+$gctf_domain="http//ali.cugctf.top:8081"
+http://ali.cugctf.top:8081/v1/ping
 ### register
 POST http://127.0.0.1:8081/v1/register
 content-type: application/json
@@ -8,10 +9,12 @@ content-type: application/json
   "password":"gctfpasswd"
 }
 ### login
-POST http://127.0.0.1:8081/v1/login
+POST http://ali.cugctf.top:8081/v1/login
 content-type: application/json
 
 {
   "username":"gctf",
   "password":"gctf"
 }
+
+###

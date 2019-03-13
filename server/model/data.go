@@ -8,15 +8,15 @@ import (
 )
 
 type User struct {
-	Id int64 `xorm:"autoincr 'id'"`
+	Id int64 `json:"id" xorm:"autoincr 'id'"`
 	//seem unique not work
-	Username       string `xorm:"unique pk"`
-	Password       string
-	Email          string    `xorm:"unique"`
-	RegisterTime   time.Time `xorm:"created notnull"`
+	Username       string    `json:"username" xorm:"unique pk"`
+	Password       string    `json:"password"`
+	Email          string    `json:"email" xorm:"unique"`
+	RegisterTime   time.Time `json:"register_time" xorm:"created notnull"`
 	ProblemsId     string
-	SolvedProblems string
-	Score          int
+	SolvedProblems string	 `json:"SolvedProblem"`
+	Score          int		`json:"score"`
 	IsAdmin        bool `xorm:"'is_admin'"`
 }
 

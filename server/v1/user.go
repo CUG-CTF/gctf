@@ -13,14 +13,30 @@ import (
 	"time"
 )
 
+//TODO: get Userinfo
 func UserInfo(c *gin.Context) {
+	username, _ := c.Cookie("username")
+	var u User
+	u.Username = username
+	h, err := GctfDataManage.Get(&u)
+	if err != nil {
+		log.Println("User/UserInfo :error to query db(username) ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error cookies"})
+		return
+	}
+	if !h {
+		log.Println("User/UserInfo: attempt to attach? no this user", u)
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "error Data"})
+		return
+	}
+	c.JSON(http.StatusOK, &u)
 
 }
 
 var Sessions map[string][]string
 
 func WriteSession(username, token string) {
-	//TODO: 应该用redis存session，这里存的session不会过期
+	//TODO: 应该用redis存session，这里存的session不会过期!!
 	if Sessions == nil {
 		Sessions = make(map[string][]string)
 	}
@@ -79,8 +95,9 @@ func Login(c *gin.Context) {
 	}
 	//TODO:login check db
 	type loginReturn struct {
-		Message string `json:"message"`
-		Token   string `json:"Token"`
+		Username string `json:"username"`
+		Token    string `json:"Token"`
+		Message  string `json:"message"`
 	}
 	var lr loginReturn
 	var u User
@@ -89,9 +106,11 @@ func Login(c *gin.Context) {
 	if err != nil {
 		log.Println("user/login: error to get user info", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "login error"})
+		return
 	}
 	if !h {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "login error"})
+		return
 	}
 	hashPasswd, err := base64.StdEncoding.DecodeString(u.Password)
 	if err != nil {
@@ -103,7 +122,7 @@ func Login(c *gin.Context) {
 	err = b.CompareHashAndPassword(hashPasswd, []byte(l.Password))
 	if err == nil {
 		lr.Message = "login ok"
-
+		lr.Username = u.Username
 		userToken, err := b.GenerateFromPassword([]byte(u.Username+time.Now().String()), b.DefaultCost)
 		if err != nil {
 			log.Println("user/login: error to gen token:", u, err.Error())
@@ -126,6 +145,7 @@ func Logout(c *gin.Context) {
 func Register(c *gin.Context) {
 	//TODO: add email verify
 	var newUser User
+	// username,password,email need
 	err := c.BindJSON(&newUser)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "bad request" + err.Error()})
@@ -155,9 +175,9 @@ func GetScore(c *gin.Context) {
 
 func SubmitFlag(c *gin.Context) {
 	type submitFlag struct {
-		username   string
-		problem_id string
-		flag       string
+		username   string `json:"usernmae"`
+		problem_id string `json:"problem_id"`
+		flag       string `json:"flag"`
 	}
 	var myflag submitFlag
 	err := c.BindJSON(&myflag)

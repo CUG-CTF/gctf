@@ -23,7 +23,6 @@ import (
 func GetUsersRank(c *gin.Context) {
 	data, err := model.GctfDataManage.Query("select `username`,`score` from gctf_user limit 50 ")
 	var userName_scores []map[string]string
-
 	for x := range data {
 		userName_score := make(map[string]string)
 		userName_score["username"] = string(data[x]["username"])
@@ -46,5 +45,14 @@ func GetTeamsRank(c *gin.Context) {
 
 //ping
 func GctfPing(c *gin.Context) {
+	type p struct {
+		Ping string `json:"ping"`
+	}
+	var pi p
+	err:=c.BindJSON(&pi)
+	if pi.Ping != "gctf"||err!= nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "wrong string"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"msg": "pong!"})
 }
