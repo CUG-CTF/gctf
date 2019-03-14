@@ -16,7 +16,15 @@ import (
 //TODO: get Userinfo
 func UserInfo(c *gin.Context) {
 	username, _ := c.Cookie("username")
+	type retInfo struct {
+		Username       string    `json:"username" xorm:"unique pk"`
+		Email          string    `json:"email" xorm:"unique"`
+		RegisterTime   time.Time `json:"register_time"`
+		SolvedProblems string	 `json:"SolvedProblem"`
+		Score          int		`json:"score"`
+	}
 	var u User
+	var ui retInfo
 	u.Username = username
 	h, err := GctfDataManage.Get(&u)
 	if err != nil {
@@ -29,7 +37,12 @@ func UserInfo(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "error Data"})
 		return
 	}
-	c.JSON(http.StatusOK, &u)
+	ui.Username=u.Username
+	ui.Email=u.Email
+	ui.RegisterTime=u.RegisterTime
+	ui.Score=u.Score
+	ui.SolvedProblems=u.SolvedProblems
+	c.JSON(http.StatusOK, &ui)
 
 }
 

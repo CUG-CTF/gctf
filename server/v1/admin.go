@@ -106,6 +106,7 @@ func ChangeProblem(c *gin.Context) {
 //先查db，然后删镜像，最后删磁盘文件
 func DeleteProblem(c *gin.Context) {
 
+	model.GctfDataManage.Query()
 }
 
 func buildUploadProblem(f io.Reader, name string) error {

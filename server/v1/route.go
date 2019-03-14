@@ -10,7 +10,7 @@ func ConfigRoute(r *gin.RouterGroup) {
 		userRoute.POST("/logout", Logout)
 		userRoute.POST("/get_problem_list", GetProblemList)
 		userRoute.POST("/get_score", GetScore)
-		userRoute.POST("/start_problem/:id", StartProblem)
+		userRoute.POST("/start_problem", StartProblem)
 		//just del problem env
 		userRoute.POST("submit_flag", SubmitFlag)
 		userRoute.POST("del_problem", UserDelProblem)

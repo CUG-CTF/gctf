@@ -11,7 +11,7 @@ type User struct {
 	Id int64 `json:"id" xorm:"autoincr 'id'"`
 	//seem unique not work
 	Username       string    `json:"username" xorm:"unique pk"`
-	Password       string    `json:"password"`
+	Password       string
 	Email          string    `json:"email" xorm:"unique"`
 	RegisterTime   time.Time `json:"register_time" xorm:"created notnull"`
 	ProblemsId     string

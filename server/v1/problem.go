@@ -143,6 +143,7 @@ func startContainer(name string) (*docker.PortBinding, error) {
 }
 
 func GetProblemList(c *gin.Context) {
+	username, _ := c.Cookie("username")
 	if model.GCTFConfig.GCTF_MODE {
 		log.Println("attempt to read all problem!")
 		c.JSON(http.StatusForbidden, gin.H{"msg": "not allow"})
@@ -161,6 +162,11 @@ func GetProblemList(c *gin.Context) {
 	if err != nil {
 		log.Println("problem/GetProblemList:error to get all problems", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to get problem list"})
+		return
+	}
+	//管理员就获得所有题目
+	if username=="gctf"{
+		c.JSON(http.StatusOK, retList)
 		return
 	}
 	for _, x := range problems {
