@@ -1,2 +1,0 @@
-this file will be delete
-Please see server/dataStruct/data.go
