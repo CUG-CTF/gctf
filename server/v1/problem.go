@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"../model"
+	"github.com/CUG-CTF/gctf/server/model"
 	"context"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gin-gonic/gin"

@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"../model"
+	"github.com/CUG-CTF/gctf/server/model"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"

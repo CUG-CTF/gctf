@@ -1,9 +1,9 @@
 package main
 
 import (
-	. "./model"
-	. "./utils"
-	"./v1"
+	. "github.com/CUG-CTF/gctf/server/model"
+	. "github.com/CUG-CTF/gctf/server/utils"
+	"github.com/CUG-CTF/gctf/server/v1"
 	"encoding/json"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
