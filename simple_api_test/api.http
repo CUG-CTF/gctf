@@ -1,20 +1,58 @@
-$gctf_domain="http//ali.cugctf.top:8081"
-http://ali.cugctf.top:8081/v1/ping
+@host= http://localhost:8081/v1
 ### register
-POST http://127.0.0.1:8081/v1/register
+POST {{host}}/register
 content-type: application/json
 
 {
   "username":"gctf",
   "password":"gctfpasswd"
 }
+
 ### login
-POST http://ali.cugctf.top:8081/v1/login
+POST {{host}}/login
 content-type: application/json
 
 {
   "username":"gctf",
-  "password":"gctf"
+  "password":"gctfpasswd"
 }
+//copy token
+### userinfo
+POST {{host}}/user/userinfo
+Cookie: username=gctf;token=JDJhJDEwJE1WNXNRTHdyT1JVYnowRWZBSHJNLy5jTUdxNzE2TlJlRkVIYnJaTGwzM2xFemdZT21ZLzky;
 
-###
+### logout
+POST {{host}}/user/logout
+Cookie: username=gctf;token=JDJhJDEwJHdvTzdPbzNCd0pQREJCR2taWTI1ek8vUUJINHhVcUlaWlBNblZZdFM4aHBsLi9nUUoybnM2;
+
+### UploadProblem
+POST {{host}}/admin/upload_problem
+Cookie: username=gctf;token=JDJhJDEwJElXMWRRMENHb0hrUFJtR1o1cTBYcGVWYzYzUktOUVE5M1ZNMTVmZ09oMFNPRk1GRmMwWXlx;
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+pwn1
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="category"
+
+pwn
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+This is description
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="value"
+
+300
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="flag"
+
+gctf{2333}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="problem";filename="pwn1.tar"
+Content-Type: application/octet-stream 
+
+< ../docker_pwn.tar
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

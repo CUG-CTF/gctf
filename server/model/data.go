@@ -10,14 +10,14 @@ import (
 type User struct {
 	Id int64 `json:"id" xorm:"autoincr 'id'"`
 	//seem unique not work
-	Username       string    `json:"username" xorm:"unique pk"`
+	Username       string `json:"username" xorm:"unique pk"`
 	Password       string
 	Email          string    `json:"email" xorm:"unique"`
 	RegisterTime   time.Time `json:"register_time" xorm:"created notnull"`
 	ProblemsId     string
-	SolvedProblems string	 `json:"SolvedProblem"`
-	Score          int		`json:"score"`
-	IsAdmin        bool `xorm:"'is_admin'"`
+	SolvedProblems string `json:"SolvedProblem"`
+	Score          int    `json:"score"`
+	IsAdmin        bool   `xorm:"'is_admin'"`
 }
 
 // Problem table, should Location is fixed?
@@ -66,14 +66,15 @@ type Teams struct {
 }
 
 type GCTFConfigStruct struct {
-	GCTF_PORT            string `json:"port"`
-	GCTF_DEBUG           bool   `json:"debug"`
-	GCTF_MODE            bool   `json:"mode"` //true is contest
-	GCTF_PROBLEM_TIMEOUT int    `json:"problem_create_timeout"`
-	GCTF_EXPLIRED_TIME   int    `json:"expired_time"` // 过期时间，单位分钟
-	GCTF_DB_DRIVER       string `json:"database_type"`
-	GCTF_DB_STRING       string `json:"database_address"`
-	GCTF_DOMAIN          string `json:"domain_name"`
+	GCTF_PORT             string `json:"port"`
+	GCTF_DEBUG            bool   `json:"debug"`
+	GCTF_MODE             bool   `json:"mode"` //true is contest
+	GCTF_PROBLEM_TIMEOUT  int    `json:"problem_create_timeout"`
+	GCTF_EXPLIRED_TIME    int    `json:"expired_time"` // 过期时间，单位分钟
+	GCTF_BUILD_TIME_LIMIT int    `json:"build_time_limit"`
+	GCTF_DB_DRIVER        string `json:"database_type"`
+	GCTF_DB_STRING        string `json:"database_address"`
+	GCTF_DOMAIN           string `json:"domain_name"`
 	//TODO: add docker server manager,else use local docker unix sock
 	GCTF_DOCKERS []string `json:"docker_servers"`
 }

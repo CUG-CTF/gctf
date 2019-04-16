@@ -1,9 +1,9 @@
 package v1
 
 import (
-	. "github.com/CUG-CTF/gctf/server/model"
 	"encoding/base64"
 	"fmt"
+	. "github.com/CUG-CTF/gctf/server/model"
 	"github.com/gin-gonic/gin"
 	b "golang.org/x/crypto/bcrypt"
 	"log"
@@ -20,8 +20,8 @@ func UserInfo(c *gin.Context) {
 		Username       string    `json:"username" xorm:"unique pk"`
 		Email          string    `json:"email" xorm:"unique"`
 		RegisterTime   time.Time `json:"register_time"`
-		SolvedProblems string	 `json:"SolvedProblem"`
-		Score          int		`json:"score"`
+		SolvedProblems string    `json:"SolvedProblem"`
+		Score          int       `json:"score"`
 	}
 	var u User
 	var ui retInfo
@@ -37,11 +37,11 @@ func UserInfo(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "error Data"})
 		return
 	}
-	ui.Username=u.Username
-	ui.Email=u.Email
-	ui.RegisterTime=u.RegisterTime
-	ui.Score=u.Score
-	ui.SolvedProblems=u.SolvedProblems
+	ui.Username = u.Username
+	ui.Email = u.Email
+	ui.RegisterTime = u.RegisterTime
+	ui.Score = u.Score
+	ui.SolvedProblems = u.SolvedProblems
 	c.JSON(http.StatusOK, &ui)
 
 }
@@ -71,7 +71,7 @@ func checkSessionMiddleware(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/login")
 		c.Abort()
 	}
-	//string is slow
+	//TODO:string compare is slow
 	for _, x := range val {
 		if token == x {
 			c.Next()
@@ -153,6 +153,16 @@ func Login(c *gin.Context) {
 }
 func Logout(c *gin.Context) {
 	//TODO: del session from K-V
+	username,_:=c.Cookie("username")
+	if username==""{
+		c.Redirect(http.StatusMovedPermanently,"/login")
+	}
+	_,ok:=Sessions[username]
+	if ok{
+		delete(Sessions,username)
+	}
+	c.JSON(http.StatusOK,gin.H{"msg":"logout ok"})
+
 }
 
 func Register(c *gin.Context) {
@@ -175,7 +185,7 @@ func Register(c *gin.Context) {
 	_, err = GctfDataManage.Insert(&newUser)
 	if err != nil {
 		log.Println("register error:" + err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to insert to db!"})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "user existed"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"msg": "OK"})

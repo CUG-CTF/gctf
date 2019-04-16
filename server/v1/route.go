@@ -6,7 +6,7 @@ func ConfigRoute(r *gin.RouterGroup) {
 	userRoute := r.Group("/user")
 	{
 		userRoute.Use(checkSessionMiddleware)
-		userRoute.POST("/", UserInfo)
+		userRoute.POST("/userinfo", UserInfo)
 		userRoute.POST("/logout", Logout)
 		userRoute.POST("/get_problem_list", GetProblemList)
 		userRoute.POST("/get_score", GetScore)
@@ -45,5 +45,5 @@ func ConfigRoute(r *gin.RouterGroup) {
 	r.POST("/get_teams_rank", GetTeamsRank)
 	r.POST("/login", Login)
 	r.POST("/register", Register)
-	r.POST("/ping", GctfPing)
+	r.GET("/ping", GctfPing)
 }

@@ -3,6 +3,7 @@
   "debug": true,
   "mode": false,
   "expired_time": 15,
+  "build_time_limit": 5,
   "problem_create_timeout": 1,
   "database_type": "postgres",
   "database_address": "postgres://postgres:Ilovecug666@localhost:5432/gctf?sslmode=disable",

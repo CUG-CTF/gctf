@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 //TODO:添加用户
@@ -52,7 +53,7 @@ func UploadProblem(c *gin.Context) {
 
 	if err != nil {
 		log.Println("Upload problem error:" + err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "upload file erroe"})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "upload file error"})
 		return
 	}
 	//题目分数应该是整数
@@ -79,6 +80,7 @@ func UploadProblem(c *gin.Context) {
 	build_result := buildUploadProblem(f, name)
 	if build_result != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to build image: " + build_result.Error()})
+		return
 	}
 	var p model.Problems
 	p.Category = category
@@ -112,7 +114,8 @@ func DeleteProblem(c *gin.Context) {
 func buildUploadProblem(f io.Reader, name string) error {
 	//TODO: context必须设置一个timeout
 	//TODO:在所有docker server上创建题目
-	dockerContext := context.Background()
+	buildTimeLimit:=model.GCTFConfig.GCTF_BUILD_TIME_LIMIT
+	dockerContext,_ := context.WithTimeout(context.Background(),time.Duration(buildTimeLimit)*time.Minute)
 	buildOutput := bytes.NewBuffer(nil)
 	bo := docker.BuildImageOptions{
 		Context:      dockerContext,
