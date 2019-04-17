@@ -18,7 +18,6 @@ import (
 func init() {
 	//config
 	readConf()
-	createDir()
 	connetDocker()
 	if GCTFConfig.GCTF_DEBUG {
 		log.Println("You are in product mode")
@@ -96,10 +95,6 @@ func readConf() {
 	if err != nil {
 		log.Fatal("error to read json conf" + err.Error())
 	}
-}
-func createDir() {
-	//TODO:add problem's dir option
-	_ = os.Mkdir("problem", os.ModeDir)
 }
 
 func connetDocker() {

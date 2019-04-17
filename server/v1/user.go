@@ -13,7 +13,6 @@ import (
 	"time"
 )
 
-//TODO: get Userinfo
 func UserInfo(c *gin.Context) {
 	username, _ := c.Cookie("username")
 	type retInfo struct {
@@ -275,6 +274,3 @@ func SubmitFlag(c *gin.Context) {
 }
 
 //TODO:用户删除题目实例
-func UserDelProblem(c *gin.Context) {
-
-}

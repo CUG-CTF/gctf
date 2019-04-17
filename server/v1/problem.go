@@ -1,8 +1,8 @@
 package v1
 
 import (
-	"github.com/CUG-CTF/gctf/server/model"
 	"context"
+	"github.com/CUG-CTF/gctf/server/model"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -165,7 +165,7 @@ func GetProblemList(c *gin.Context) {
 		return
 	}
 	//管理员就获得所有题目
-	if username=="gctf"{
+	if username == "gctf" {
 		c.JSON(http.StatusOK, retList)
 		return
 	}
@@ -181,4 +181,8 @@ func GetProblemList(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusOK, retList)
+}
+
+func UserDelProblem(c *gin.Context) {
+
 }
