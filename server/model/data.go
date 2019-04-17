@@ -24,12 +24,12 @@ type User struct {
 //TODO:unique invalid?
 type Problems struct {
 	Id          int64  `xorm:"autoincr pk 'id'"`
-	Name        string `xorm:"unique(name_location)"`
+	Name        string `xorm:"unique"`
 	Description string // Problem Description
 	Value       int    // score
 	Category    string
 	Hidden      bool                                  // should be problem hide?
-	Location    string `xorm:"unique(name_location)"` // saved physical position
+	Location    string `xorm:"unique"` // saved physical position
 	Flag        string                                //默认flag，(不开启动态flag)
 	Scale       int `xorm:"default 0"`                // score scale when each answer submit
 }
