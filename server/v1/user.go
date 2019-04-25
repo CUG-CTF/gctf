@@ -243,13 +243,21 @@ func SubmitFlag(c *gin.Context) {
 	}
 
 	if GCTFConfig.GCTF_MODE {
-		//Todo:在比赛模式中，应该重新计算分数
+		//Todo:在比赛模式中，应该重新计算所有人的分数
 
 	} else {
 		if p.Flag == myflag.Flag {
+			
 			if len(u.SolvedProblems) == 0 {
 				//第一次提交flag，不然就逗号开头了
 				u.SolvedProblems = myflag.Problem_id
+			}
+			solved:=strings.Split(u.SolvedProblems,",")
+			for _,x:=range solved{
+				if x==myflag.Problem_id{
+					c.JSON(http.StatusBadRequest,gin.H{"mgs":"This flag already submit!"})
+					return
+				}
 			}
 			u.SolvedProblems += "," + myflag.Problem_id
 
@@ -261,10 +269,10 @@ func SubmitFlag(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"msg": "server internal error"})
 				return
 			}
-			c.JSON(http.StatusOK, gin.H{"msg": "flag correct!"})
+			c.JSON(http.StatusOK, gin.H{"succeed": true, "msg": "flag correct!"})
 			return
 		} else {
-			c.JSON(http.StatusOK, gin.H{"msg": "flag error!"})
+			c.JSON(http.StatusOK, gin.H{"succeed": false, "msg": "flag error!"})
 			return
 		}
 	}

@@ -128,9 +128,16 @@ func UploadProblem(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to create folder" + "problems/" + category, "err": err.Error()})
 	}
-	err = c.SaveUploadedFile(problem, "problems/"+category+"/"+name+".tar.gz")
+	dist:="problems/"+category+"/"+name+".tar.gz"
+	_,err=os.Stat(dist)
+	if err==nil{
+		c.JSON(http.StatusOK,gin.H{"msg":"file exist!"})
+		return
+	}
+	err = c.SaveUploadedFile(problem, dist)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to save upload file", "err": err.Error()})
+		return
 	}
 	p.Category = category
 	p.Value = value
@@ -196,6 +203,7 @@ func buildUploadProblem(p model.Problems) {
 
 //TODO:change a problem's information
 //验证数据库、镜像、磁盘
+//value flag、description、category、Hidden、Port
 func ChangeProblem(c *gin.Context) {
 
 }

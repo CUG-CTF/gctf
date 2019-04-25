@@ -186,6 +186,7 @@ func GetProblemList(c *gin.Context) {
 }
 
 //TODO:用户删除题目实例
+//删掉容器，清除数据库
 func UserDelProblem(c *gin.Context) {
 
 }
