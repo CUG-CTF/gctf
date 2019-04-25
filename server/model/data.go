@@ -1,9 +1,11 @@
 package model
 
 import (
+	"bytes"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/go-xorm/xorm"
 	_ "github.com/lib/pq"
+	"sync"
 	"time"
 )
 
@@ -28,10 +30,11 @@ type Problems struct {
 	Description string // Problem Description
 	Value       int    // score
 	Category    string
-	Hidden      bool                                  // should be problem hide?
+	Hidden      bool                   // should be problem hide?
 	Location    string `xorm:"unique"` // saved physical position
-	Flag        string                                //默认flag，(不开启动态flag)
-	Scale       int `xorm:"default 0"`                // score scale when each answer submit
+	Flag        string                 //默认flag，(不开启动态flag)
+	Scale       int `xorm:"default 0"` // score scale when each answer submit
+	Port        int `xorm:"default 0"` //内部端口
 }
 
 // 每启动一个problem 实例，就写入一条数据，如果flag为动态，那么就要填入Flag字段
@@ -41,6 +44,7 @@ type UserProblems struct {
 	Location   string                              // problem net location
 	Flag       string
 	ProblemsId int64 `xorm:"unique(user_problem)"` //foreignkey gctf_problems.id
+	DockerID   string                              //docker id
 	Expired    time.Time                           //过期时间
 }
 
@@ -66,17 +70,16 @@ type Teams struct {
 }
 
 type GCTFConfigStruct struct {
-	GCTF_PORT             string `json:"port"`
-	GCTF_DEBUG            bool   `json:"debug"`
-	GCTF_MODE             bool   `json:"mode"` //true is contest
-	GCTF_PROBLEM_TIMEOUT  int    `json:"problem_create_timeout"`
-	GCTF_EXPLIRED_TIME    int    `json:"expired_time"` // 过期时间，单位分钟
-	GCTF_BUILD_TIME_LIMIT int    `json:"build_time_limit"`
-	GCTF_DB_DRIVER        string `json:"database_type"`
-	GCTF_DB_STRING        string `json:"database_address"`
-	GCTF_DOMAIN           string `json:"domain_name"`
-	//TODO: add docker server manager,else use local docker unix sock
-	GCTF_DOCKERS []string `json:"docker_servers"`
+	GCTF_PORT             string   `json:"port"`
+	GCTF_DEBUG            bool     `json:"debug"`
+	GCTF_MODE             bool     `json:"mode"` //true is contest
+	GCTF_PROBLEM_TIMEOUT  int      `json:"problem_create_timeout"`
+	GCTF_EXPLIRED_TIME    int      `json:"expired_time"` // 过期时间，单位分钟
+	GCTF_BUILD_TIME_LIMIT int      `json:"build_time_limit"`
+	GCTF_DB_DRIVER        string   `json:"database_type"`
+	GCTF_DB_STRING        string   `json:"database_address"`
+	GCTF_DOMAIN           string   `json:"domain_name"`
+	GCTF_DOCKERS          []string `json:"docker_servers"`
 }
 type DockerManager interface {
 	GetDockerClient() *docker.Client
@@ -91,3 +94,47 @@ var (
 
 //database manager
 var GctfDataManage *xorm.Engine
+
+//problems 上传队列
+type uploadQueue struct {
+	m              sync.Mutex
+	UploadProblems chan Problems
+	BuildBegin     bool
+}
+
+//problems 构建输出列表，不要直接操作BuildOutputs
+type buildOutputList struct {
+	m            sync.Mutex
+	buildOutputs map[string]*BuildResult
+}
+
+//problems  构建结果
+type BuildResult struct {
+	Err    error
+	Output *bytes.Buffer
+}
+
+var (
+	UploadQuene     uploadQueue
+	BuildOutputList buildOutputList
+)
+
+
+//添加problem build 输出，并不会检查是否存在，需要用Get自行判断
+//TODO: 增加定时清空
+func (b buildOutputList)Add(name string,buildResult *BuildResult){
+	b.m.Lock()
+	b.buildOutputs[name]=buildResult
+	b.m.Unlock()
+}
+
+//获取一个problem build输出
+func(b buildOutputList)Get(name string ) *BuildResult{
+	b.m.Lock()
+	r,ok:=b.buildOutputs[name]
+	b.m.Unlock()
+	if ok{
+		return r
+	}
+	return nil
+}

@@ -8,7 +8,7 @@ import (
 
 type DockerPolling struct {
 	Clients []*docker.Client
-	number  uint64
+	number  uint64 //总数
 	current uint64
 }
 

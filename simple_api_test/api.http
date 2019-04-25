@@ -19,7 +19,7 @@ content-type: application/json
 //copy token
 ### userinfo
 POST {{host}}/user/userinfo
-Cookie: username=gctf;token=JDJhJDEwJE1WNXNRTHdyT1JVYnowRWZBSHJNLy5jTUdxNzE2TlJlRkVIYnJaTGwzM2xFemdZT21ZLzky;
+Cookie: username=gctf;token=JDJhJDEwJHNJTHhZRWJ1Yy9aVnB1RlI4Q1RLWk9zVmxzbW52L3JvRWpnTnd0LlY3OFozSFdwYk1tWGdh;
 
 ### logout
 POST {{host}}/user/logout
@@ -27,7 +27,7 @@ Cookie: username=gctf;token=JDJhJDEwJHdvTzdPbzNCd0pQREJCR2taWTI1ek8vUUJINHhVcUla
 
 ### UploadProblem
 POST {{host}}/admin/upload_problem
-Cookie: username=gctf;token=JDJhJDEwJElXMWRRMENHb0hrUFJtR1o1cTBYcGVWYzYzUktOUVE5M1ZNMTVmZ09oMFNPRk1GRmMwWXlx;
+Cookie: username=gctf;token=JDJhJDEwJHNJTHhZRWJ1Yy9aVnB1RlI4Q1RLWk9zVmxzbW52L3JvRWpnTnd0LlY3OFozSFdwYk1tWGdh;
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -46,6 +46,10 @@ This is description
 Content-Disposition: form-data; name="value"
 
 300
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="port"
+
+2817
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="flag"
 

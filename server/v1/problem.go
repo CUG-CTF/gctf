@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -26,8 +27,8 @@ func StartProblem(c *gin.Context) {
 	// json 反序列化失败
 	err := c.BindJSON(&sp)
 	if err != nil {
-		log.Println("user/StartProblem: errot to bind json" + err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to start bind json"})
+		log.Println("user/StartProblem: error to bind json" + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to  bind json"})
 		return
 	}
 	var p model.Problems
@@ -56,6 +57,7 @@ func StartProblem(c *gin.Context) {
 	//查一下是不是已经创建题目实例了
 
 	h, err = model.GctfDataManage.Get(&up)
+	//TODO:更多测试出错原因
 	if err != nil {
 		log.Println("user/StartProblem: error to search db(user problem) ", err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to search db"})
@@ -78,7 +80,7 @@ func StartProblem(c *gin.Context) {
 		return
 	}
 	//启动实例
-	problemAddr, err := startContainer(p.Name)
+	problemAddr, err := startContainer(p)
 	//TODO:启动失败，应当删除题目实例
 	if err != nil {
 		log.Println("user/StartProblem: error to start a  problem(name =" + p.Name + ") " + err.Error())
@@ -100,20 +102,20 @@ func StartProblem(c *gin.Context) {
 		"expired:":  now.Format("15:04:05"),
 	})
 }
-func startContainer(name string) (*docker.PortBinding, error) {
+func startContainer(p model.Problems) (*docker.PortBinding, error) {
 	//TODO:设置1分钟测试用，实际开发要替换为配置文件中设置的时间
 	context_timeout, _ := context.WithTimeout(context.Background(), 1*time.Minute)
 	//context_timeout,_:=context.WithTimeout(context.Background(),time.Duration(model.GCTFConfig.GCTF_PROBLEM_TIMEOUT)*time.Minute)
 	createOpt := docker.CreateContainerOptions{
 		Config: &docker.Config{
-			Image: name,
+			Image: p.Name,
 		},
 		Context: context_timeout,
 		//TODO:web题目多端口处理
 		HostConfig: &docker.HostConfig{
 			PublishAllPorts: true,
 			PortBindings: map[docker.Port][]docker.PortBinding{
-				"2817": {
+				docker.Port(strconv.Itoa(p.Port)): {
 					{
 						"0.0.0.0",
 						"",
@@ -137,7 +139,7 @@ func startContainer(name string) (*docker.PortBinding, error) {
 	}
 	ret := new(docker.PortBinding)
 	ret.HostIP = cli.Endpoint()
-	ret.HostPort = rsp.NetworkSettings.Ports["2817"][0].HostPort
+	ret.HostPort = rsp.NetworkSettings.Ports[docker.Port(strconv.Itoa(p.Port))][0].HostPort
 	return ret, err
 
 }
@@ -183,6 +185,7 @@ func GetProblemList(c *gin.Context) {
 	c.JSON(http.StatusOK, retList)
 }
 
+//TODO:用户删除题目实例
 func UserDelProblem(c *gin.Context) {
 
 }
