@@ -137,3 +137,12 @@ func (b buildOutputList) Get(name string) *BuildResult {
 	}
 	return nil
 }
+
+func initBuildQueue() {
+	UploadQuene.BuildBegin = false
+	UploadQuene.UploadProblems = make(chan Problems, 10)
+}
+func init() {
+	BuildOutputList.buildOutputs = make(map[string]*BuildResult)
+	initBuildQueue()
+}

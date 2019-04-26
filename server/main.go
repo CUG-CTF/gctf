@@ -21,7 +21,6 @@ func init() {
 	connetDocker()
 	setConf()
 	initDB()
-	initBuildQueue()
 
 }
 
@@ -110,10 +109,7 @@ func connetDocker() {
 	GCTFDockerManager = NewPollingDockerClient()
 }
 
-func initBuildQueue() {
-	UploadQuene.BuildBegin = false
-	UploadQuene.UploadProblems = make(chan Problems, 10)
-}
+
 
 //Todo:更多单元测试
 func main() {
