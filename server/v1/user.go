@@ -19,7 +19,7 @@ func UserInfo(c *gin.Context) {
 		Username       string    `json:"username" xorm:"unique pk"`
 		Email          string    `json:"email" xorm:"unique"`
 		RegisterTime   time.Time `json:"register_time"`
-		SolvedProblems string    `json:"SolvedProblem"`
+		SolvedProblems string    `json:"solved_problem"`
 		Score          int       `json:"score"`
 	}
 	var u User
@@ -108,8 +108,8 @@ func Login(c *gin.Context) {
 	//TODO:login check db
 	type loginReturn struct {
 		Username string `json:"username"`
-		Token    string `json:"Token"`
-		Message  string `json:"message"`
+		Token    string `json:"token"`
+		Message  string `json:"msg"`
 	}
 	var lr loginReturn
 	var u User

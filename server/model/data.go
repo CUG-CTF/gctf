@@ -12,8 +12,8 @@ import (
 type User struct {
 	Id int64 `json:"id" xorm:"autoincr 'id'"`
 	//seem unique not work
-	Username       string `json:"username" xorm:"unique pk"`
-	Password       string
+	Username       string    `json:"username" xorm:"unique pk"`
+	Password       string    `json:"password"`
 	Email          string    `json:"email" xorm:"unique"`
 	RegisterTime   time.Time `json:"register_time" xorm:"created notnull"`
 	ProblemsId     string
@@ -119,21 +119,20 @@ var (
 	BuildOutputList buildOutputList
 )
 
-
 //添加problem build 输出，并不会检查是否存在，需要用Get自行判断
 //TODO: 增加定时清空
-func (b buildOutputList)Add(name string,buildResult *BuildResult){
+func (b buildOutputList) Add(name string, buildResult *BuildResult) {
 	b.m.Lock()
-	b.buildOutputs[name]=buildResult
+	b.buildOutputs[name] = buildResult
 	b.m.Unlock()
 }
 
 //获取一个problem build输出
-func(b buildOutputList)Get(name string ) *BuildResult{
+func (b buildOutputList) Get(name string) *BuildResult {
 	b.m.Lock()
-	r,ok:=b.buildOutputs[name]
+	r, ok := b.buildOutputs[name]
 	b.m.Unlock()
-	if ok{
+	if ok {
 		return r
 	}
 	return nil

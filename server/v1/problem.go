@@ -103,8 +103,8 @@ func StartProblem(c *gin.Context) {
 	})
 }
 func startContainer(p model.Problems) (*docker.PortBinding, error) {
-	//TODO:设置1分钟测试用，实际开发要替换为配置文件中设置的时间
-	context_timeout, _ := context.WithTimeout(context.Background(), 1*time.Minute)
+	//TODO:设置10分钟测试用，实际开发要替换为配置文件中设置的时间
+	context_timeout, _ := context.WithTimeout(context.Background(), 10*time.Minute)
 	//context_timeout,_:=context.WithTimeout(context.Background(),time.Duration(model.GCTFConfig.GCTF_PROBLEM_TIMEOUT)*time.Minute)
 	createOpt := docker.CreateContainerOptions{
 		Config: &docker.Config{
@@ -139,7 +139,9 @@ func startContainer(p model.Problems) (*docker.PortBinding, error) {
 	}
 	ret := new(docker.PortBinding)
 	ret.HostIP = cli.Endpoint()
-	ret.HostPort = rsp.NetworkSettings.Ports[docker.Port(strconv.Itoa(p.Port))][0].HostPort
+	//TODO:目前仅支持TCP端口
+	port:=docker.Port(strconv.Itoa(p.Port)+"/tcp")
+	ret.HostPort = rsp.NetworkSettings.Ports[port][0].HostPort
 	return ret, err
 
 }
@@ -168,7 +170,7 @@ func GetProblemList(c *gin.Context) {
 	}
 	//管理员就获得所有题目
 	if username == "gctf" {
-		c.JSON(http.StatusOK, retList)
+		c.JSON(http.StatusOK, problems)
 		return
 	}
 	for _, x := range problems {
