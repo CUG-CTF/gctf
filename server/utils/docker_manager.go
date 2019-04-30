@@ -21,10 +21,10 @@ func (polling *DockerPolling) GetCurrent() uint64 {
 func NewPollingDockerClient() *DockerPolling {
 	r := new(DockerPolling)
 	var clients []*docker.Client
-	for _, x := range GCTFConfig.GCTF_DOCKERS {
-		DockerClient, err := docker.NewClient(x)
+	for c, _ := range GCTFConfig.GCTF_DOCKERS {
+		DockerClient, err := docker.NewClient(c)
 		if err != nil {
-			log.Println("error to connect " + x + " :" + err.Error())
+			log.Println("error to connect " + c + " :" + err.Error())
 			continue
 		}
 		clients = append(clients, DockerClient)

@@ -79,7 +79,7 @@ type GCTFConfigStruct struct {
 	GCTF_DB_DRIVER        string   `json:"database_type"`
 	GCTF_DB_STRING        string   `json:"database_address"`
 	GCTF_DOMAIN           string   `json:"domain_name"`
-	GCTF_DOCKERS          []string `json:"docker_servers"`
+	GCTF_DOCKERS          map[string]string `json:"docker_servers"`
 }
 type DockerManager interface {
 	GetDockerClient() *docker.Client

@@ -54,8 +54,8 @@ func StartProblem(c *gin.Context) {
 	var up model.UserProblems
 	up.ProblemsId = sp.Problem_id
 	up.UserId = u.Id
-	//查一下是不是已经创建题目实例了
 
+	//查一下是不是已经创建题目实例了
 	h, err = model.GctfDataManage.Get(&up)
 	//TODO:更多测试出错原因
 	if err != nil {
@@ -88,7 +88,7 @@ func StartProblem(c *gin.Context) {
 		return
 	}
 	//返回题目地址
-	up.Location = problemAddr.HostIP + ":" + problemAddr.HostPort
+	up.Location = model.GCTFConfig.GCTF_DOCKERS[problemAddr.HostIP] + ":" + problemAddr.HostPort
 	up.UserId = u.Id
 	up.ProblemsId = p.Id
 	_, err = model.GctfDataManage.Insert(&up)
@@ -97,7 +97,7 @@ func StartProblem(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to insert db"})
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"host_ip":   problemAddr.HostIP,
+		"host_ip":  model.GCTFConfig.GCTF_DOCKERS[problemAddr.HostIP],
 		"host_port": problemAddr.HostPort,
 		"expired:":  now.Format("15:04:05"),
 	})

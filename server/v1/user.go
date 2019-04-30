@@ -148,6 +148,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusOK, &lr)
 	} else {
 		c.JSON(http.StatusForbidden, gin.H{"msg": "login error"})
+		return
 	}
 }
 func Logout(c *gin.Context) {
@@ -247,15 +248,15 @@ func SubmitFlag(c *gin.Context) {
 
 	} else {
 		if p.Flag == myflag.Flag {
-			
+
 			if len(u.SolvedProblems) == 0 {
 				//第一次提交flag，不然就逗号开头了
 				u.SolvedProblems = myflag.Problem_id
 			}
-			solved:=strings.Split(u.SolvedProblems,",")
-			for _,x:=range solved{
-				if x==myflag.Problem_id{
-					c.JSON(http.StatusBadRequest,gin.H{"mgs":"This flag already submit!"})
+			solved := strings.Split(u.SolvedProblems, ",")
+			for _, x := range solved {
+				if x == myflag.Problem_id {
+					c.JSON(http.StatusBadRequest, gin.H{"mgs": "This flag already submit!"})
 					return
 				}
 			}

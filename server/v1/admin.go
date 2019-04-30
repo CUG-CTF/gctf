@@ -211,8 +211,20 @@ func ChangeProblem(c *gin.Context) {
 //TODO:delete a problem from disk and db
 //先查db，然后删镜像，最后删磁盘文件
 func DeleteProblem(c *gin.Context) {
-
-	model.GctfDataManage.Query()
+	var pn model.Problems
+	err:=c.BindJSON(&pn)
+	if err!=nil{
+		c.JSON(http.StatusBadRequest,"error to bind json!")
+		log.Println("admin/DeleteProblem: error to bind json: "+err.Error())
+		return
+	}
+	h,err:=model.GctfDataManage.Get(&pn)
+	if err!=nil{
+		c.JSON(http.StatusInternalServerError,"errro to search db!")
+		log.Println("admin/DeleteProblem: error to search db: "+err.Error())
+		return
+	}
+	cli:=model.GCTFDockerManager.GetDockerClient()
 }
 
 //TODO:增加备份和恢复功能
