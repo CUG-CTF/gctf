@@ -9,7 +9,8 @@ func ConfigRoute(r *gin.RouterGroup) {
 		userRoute.POST("/userinfo", UserInfo)
 		userRoute.POST("/logout", Logout)
 		userRoute.POST("/get_problem_list", GetProblemList)
-		userRoute.POST("/get_score", GetScore)
+		//userinfo 代替吧
+		//userRoute.POST("/get_score", GetScore)
 		userRoute.POST("/start_problem", StartProblem)
 		//just del problem env
 		userRoute.POST("submit_flag", SubmitFlag)

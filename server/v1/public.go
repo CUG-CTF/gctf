@@ -21,7 +21,7 @@ import (
  */
 //User mode
 func GetUsersRank(c *gin.Context) {
-	data, err := model.GctfDataManage.Query("select `username`,`score` from gctf_user limit 50 ")
+	data, err := model.GctfDataManage.Query("select `username`,`score` from gctf_user limit 100 ")
 	var userName_scores []map[string]string
 	for x := range data {
 		userName_score := make(map[string]string)

@@ -1,10 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	. "github.com/CUG-CTF/gctf/server/model"
 	. "github.com/CUG-CTF/gctf/server/utils"
 	"github.com/CUG-CTF/gctf/server/v1"
-	"encoding/json"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-xorm/core"
@@ -19,7 +19,37 @@ func init() {
 	//config
 	readConf()
 	connetDocker()
-	if GCTFConfig.GCTF_DEBUG {
+	setConf()
+	initDB()
+
+}
+
+func checkerr(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func readConf() {
+	confFile, err := os.Open("conf.json")
+	if GCTFConfig == nil {
+		GCTFConfig = new(GCTFConfigStruct)
+	}
+	if err != nil {
+		log.Fatal("error to open conf file " + err.Error())
+	}
+	conf, err := ioutil.ReadAll(confFile)
+	if err != nil {
+		log.Fatal("error to read conf file " + err.Error())
+	}
+	err = json.Unmarshal(conf, GCTFConfig)
+	if err != nil {
+		log.Fatal("error to read json conf" + err.Error())
+	}
+}
+
+func setConf() {
+	if !GCTFConfig.GCTF_DEBUG {
 		log.Println("You are in product mode")
 	} else {
 		log.Println("Your are in DEBUG mode!")
@@ -42,9 +72,11 @@ func init() {
 	if GCTFConfig.GCTF_DOCKERS == nil {
 		log.Println("You are not set DOCKER server,will us local unix sock")
 	}
-
-	//database
+}
+func initDB() {
+	//database init
 	var err error
+
 	// go-xorm is used to create database engine
 	// engine, err := xorm.NewEngine(driverName, dataSourceName)
 	// data
@@ -72,35 +104,12 @@ func init() {
 	// GctfDataManage.DropTables("gctf_user","gctf_problems","gctf_user_problems","gctf_hints","gctf_tag","gctf_teams")
 	checkerr(err)
 }
-
-func checkerr(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func readConf() {
-	confFile, err := os.Open("conf.json")
-	if GCTFConfig == nil {
-		GCTFConfig = new(GCTFConfigStruct)
-	}
-	if err != nil {
-		log.Fatal("error to open conf file " + err.Error())
-	}
-	conf, err := ioutil.ReadAll(confFile)
-	if err != nil {
-		log.Fatal("error to read conf file " + err.Error())
-	}
-	err = json.Unmarshal(conf, GCTFConfig)
-	if err != nil {
-		log.Fatal("error to read json conf" + err.Error())
-	}
-}
-
 func connetDocker() {
 	//TODO:select docker manager type
 	GCTFDockerManager = NewPollingDockerClient()
 }
+
+
 
 //Todo:更多单元测试
 func main() {
@@ -114,7 +123,7 @@ func main() {
 	}))
 	v1.ConfigRoute(gCTFRoute.Group("/v1"))
 
-	err := gCTFRoute.Run(":"+GCTFConfig.GCTF_PORT)
+	err := gCTFRoute.Run(":" + GCTFConfig.GCTF_PORT)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -19,7 +19,7 @@ func UserInfo(c *gin.Context) {
 		Username       string    `json:"username" xorm:"unique pk"`
 		Email          string    `json:"email" xorm:"unique"`
 		RegisterTime   time.Time `json:"register_time"`
-		SolvedProblems string    `json:"SolvedProblem"`
+		SolvedProblems string    `json:"solved_problem"`
 		Score          int       `json:"score"`
 	}
 	var u User
@@ -148,24 +148,24 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusOK, &lr)
 	} else {
 		c.JSON(http.StatusForbidden, gin.H{"msg": "login error"})
+		return
 	}
 }
 func Logout(c *gin.Context) {
 	//TODO: del session from K-V
-	username,_:=c.Cookie("username")
-	if username==""{
-		c.Redirect(http.StatusMovedPermanently,"/login")
+	username, _ := c.Cookie("username")
+	if username == "" {
+		c.Redirect(http.StatusMovedPermanently, "/login")
 	}
-	_,ok:=Sessions[username]
-	if ok{
-		delete(Sessions,username)
+	_, ok := Sessions[username]
+	if ok {
+		delete(Sessions, username)
 	}
-	c.JSON(http.StatusOK,gin.H{"msg":"logout ok"})
+	c.JSON(http.StatusOK, gin.H{"msg": "logout ok"})
 
 }
 
 func Register(c *gin.Context) {
-	//TODO: add email verify
 	var newUser User
 	// username,password,email need
 	err := c.BindJSON(&newUser)
@@ -173,8 +173,7 @@ func Register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "bad request" + err.Error()})
 		return
 	}
-	//username := c.PostForm("username")
-	//password := c.PostForm("password")
+	//TODO:验证邮箱，用户名，密码格式
 	hashed, err := b.GenerateFromPassword([]byte(newUser.Password), b.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error encrypt password!" + err.Error()})
@@ -197,9 +196,9 @@ func GetScore(c *gin.Context) {
 
 func SubmitFlag(c *gin.Context) {
 	type submitFlag struct {
-		username   string `json:"usernmae"`
-		problem_id string `json:"problem_id"`
-		flag       string `json:"flag"`
+		Username   string `json:"usernmae"`
+		Problem_id string `json:"problem_id"`
+		Flag       string `json:"flag"`
 	}
 	var myflag submitFlag
 	err := c.BindJSON(&myflag)
@@ -209,7 +208,7 @@ func SubmitFlag(c *gin.Context) {
 		return
 	}
 	var u User
-	u.Username = myflag.username
+	u.Username = myflag.Username
 	h, err := GctfDataManage.Get(&u)
 	//前端试图去提交一个不存在的用户名，并绕过了token!
 	if !h {
@@ -224,13 +223,13 @@ func SubmitFlag(c *gin.Context) {
 	}
 	solvedProblems := strings.Split(u.SolvedProblems, ",")
 	for _, solvedProblem := range solvedProblems {
-		if myflag.problem_id == solvedProblem {
+		if myflag.Problem_id == solvedProblem {
 			c.JSON(http.StatusOK, gin.H{"msg": "You submit already"})
 			return
 		}
 	}
 	var p Problems
-	p.Id, _ = strconv.ParseInt(myflag.problem_id, 10, 64)
+	p.Id, _ = strconv.ParseInt(myflag.Problem_id, 10, 64)
 	//查database去拿到正确的flag
 	h, err = GctfDataManage.Get(&p)
 	if !h {
@@ -245,15 +244,23 @@ func SubmitFlag(c *gin.Context) {
 	}
 
 	if GCTFConfig.GCTF_MODE {
-		//Todo:在比赛模式中，应该重新计算分数
+		//Todo:在比赛模式中，应该重新计算所有人的分数
 
 	} else {
-		if p.Flag == myflag.flag {
+		if p.Flag == myflag.Flag {
+
 			if len(u.SolvedProblems) == 0 {
 				//第一次提交flag，不然就逗号开头了
-				u.SolvedProblems = myflag.problem_id
+				u.SolvedProblems = myflag.Problem_id
 			}
-			u.SolvedProblems += "," + myflag.problem_id
+			solved := strings.Split(u.SolvedProblems, ",")
+			for _, x := range solved {
+				if x == myflag.Problem_id {
+					c.JSON(http.StatusBadRequest, gin.H{"mgs": "This flag already submit!"})
+					return
+				}
+			}
+			u.SolvedProblems += "," + myflag.Problem_id
 
 			//更新分数
 			u.Score += p.Value
@@ -263,14 +270,12 @@ func SubmitFlag(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"msg": "server internal error"})
 				return
 			}
-			c.JSON(http.StatusOK, gin.H{"msg": "flag correct!"})
+			c.JSON(http.StatusOK, gin.H{"succeed": true, "msg": "flag correct!"})
 			return
 		} else {
-			c.JSON(http.StatusOK, gin.H{"msg": "flag error!"})
+			c.JSON(http.StatusOK, gin.H{"succeed": false, "msg": "flag error!"})
 			return
 		}
 	}
 
 }
-
-//TODO:用户删除题目实例

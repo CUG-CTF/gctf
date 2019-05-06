@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -26,8 +27,8 @@ func StartProblem(c *gin.Context) {
 	// json 反序列化失败
 	err := c.BindJSON(&sp)
 	if err != nil {
-		log.Println("user/StartProblem: errot to bind json" + err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to start bind json"})
+		log.Println("user/StartProblem: error to bind json" + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to  bind json"})
 		return
 	}
 	var p model.Problems
@@ -53,9 +54,10 @@ func StartProblem(c *gin.Context) {
 	var up model.UserProblems
 	up.ProblemsId = sp.Problem_id
 	up.UserId = u.Id
-	//查一下是不是已经创建题目实例了
 
+	//查一下是不是已经创建题目实例了
 	h, err = model.GctfDataManage.Get(&up)
+	//TODO:更多测试出错原因
 	if err != nil {
 		log.Println("user/StartProblem: error to search db(user problem) ", err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to search db"})
@@ -78,7 +80,7 @@ func StartProblem(c *gin.Context) {
 		return
 	}
 	//启动实例
-	problemAddr, err := startContainer(p.Name)
+	problemAddr, err := startContainer(p)
 	//TODO:启动失败，应当删除题目实例
 	if err != nil {
 		log.Println("user/StartProblem: error to start a  problem(name =" + p.Name + ") " + err.Error())
@@ -86,7 +88,7 @@ func StartProblem(c *gin.Context) {
 		return
 	}
 	//返回题目地址
-	up.Location = problemAddr.HostIP + ":" + problemAddr.HostPort
+	up.Location = model.GCTFConfig.GCTF_DOCKERS[problemAddr.HostIP] + ":" + problemAddr.HostPort
 	up.UserId = u.Id
 	up.ProblemsId = p.Id
 	_, err = model.GctfDataManage.Insert(&up)
@@ -95,25 +97,25 @@ func StartProblem(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to insert db"})
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"host_ip":   problemAddr.HostIP,
+		"host_ip":  model.GCTFConfig.GCTF_DOCKERS[problemAddr.HostIP],
 		"host_port": problemAddr.HostPort,
 		"expired:":  now.Format("15:04:05"),
 	})
 }
-func startContainer(name string) (*docker.PortBinding, error) {
-	//TODO:设置1分钟测试用，实际开发要替换为配置文件中设置的时间
-	context_timeout, _ := context.WithTimeout(context.Background(), 1*time.Minute)
+func startContainer(p model.Problems) (*docker.PortBinding, error) {
+	//TODO:设置10分钟测试用，实际开发要替换为配置文件中设置的时间
+	context_timeout, _ := context.WithTimeout(context.Background(), 10*time.Minute)
 	//context_timeout,_:=context.WithTimeout(context.Background(),time.Duration(model.GCTFConfig.GCTF_PROBLEM_TIMEOUT)*time.Minute)
 	createOpt := docker.CreateContainerOptions{
 		Config: &docker.Config{
-			Image: name,
+			Image: p.Name,
 		},
 		Context: context_timeout,
 		//TODO:web题目多端口处理
 		HostConfig: &docker.HostConfig{
 			PublishAllPorts: true,
 			PortBindings: map[docker.Port][]docker.PortBinding{
-				"2817": {
+				docker.Port(strconv.Itoa(p.Port)): {
 					{
 						"0.0.0.0",
 						"",
@@ -137,7 +139,9 @@ func startContainer(name string) (*docker.PortBinding, error) {
 	}
 	ret := new(docker.PortBinding)
 	ret.HostIP = cli.Endpoint()
-	ret.HostPort = rsp.NetworkSettings.Ports["2817"][0].HostPort
+	//TODO:目前仅支持TCP端口
+	port:=docker.Port(strconv.Itoa(p.Port)+"/tcp")
+	ret.HostPort = rsp.NetworkSettings.Ports[port][0].HostPort
 	return ret, err
 
 }
@@ -166,7 +170,7 @@ func GetProblemList(c *gin.Context) {
 	}
 	//管理员就获得所有题目
 	if username == "gctf" {
-		c.JSON(http.StatusOK, retList)
+		c.JSON(http.StatusOK, problems)
 		return
 	}
 	for _, x := range problems {
@@ -183,6 +187,8 @@ func GetProblemList(c *gin.Context) {
 	c.JSON(http.StatusOK, retList)
 }
 
+//TODO:用户删除题目实例
+//删掉容器，清除数据库
 func UserDelProblem(c *gin.Context) {
 
 }
