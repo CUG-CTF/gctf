@@ -108,8 +108,8 @@ func Login(c *gin.Context) {
 	//TODO:login check db
 	type loginReturn struct {
 		Username string `json:"username"`
-		Token    string `json:"Token"`
-		Message  string `json:"message"`
+		Token    string `json:"token"`
+		Message  string `json:"msg"`
 	}
 	var lr loginReturn
 	var u User
