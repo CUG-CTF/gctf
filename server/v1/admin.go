@@ -189,7 +189,7 @@ func buildUploadProblem(p model.Problems) {
 	model.BuildOutputList.Add(p.Name, &br)
 	if err != nil {
 		br.Err = err
-		log.Println("admin/Upload Problem:error to build a problem")
+		log.Println("admin/Upload Problem:error to build a problem",err.Error())
 		return
 	}
 	//存在已经判定过了

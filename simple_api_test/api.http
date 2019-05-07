@@ -21,30 +21,30 @@ content-type: application/json
 //copy token
 ### userinfo
 POST {{host}}/user/userinfo
-Cookie: username=gctf;token=JDJhJDEwJC5kWEZrc2plYTlHY25zSEVWZzkzd3UwNHFCV0EwS1RmYTNnT2VlRTgvdzdRT3B6alFvajZX;
+Cookie: username=gctf;token=JDJhJDEwJHdUZmo1cWk4Q2JyMDZ6cG5OYnA1ZHVYdlV0T0xzOGRGeHYybGo4T3RIdnFCcjBqU0dNOW4u;
 
 ### logout
 POST {{host}}/user/logout
-Cookie: username=gctf;token=JDJhJDEwJC5kWEZrc2plYTlHY25zSEVWZzkzd3UwNHFCV0EwS1RmYTNnT2VlRTgvdzdRT3B6alFvajZX;
+Cookie: username=gctf;token=JDJhJDEwJHdUZmo1cWk4Q2JyMDZ6cG5OYnA1ZHVYdlV0T0xzOGRGeHYybGo4T3RIdnFCcjBqU0dNOW4u;
 
 ### get_problem_list
 POST {{host}}/user/get_problem_list
-Cookie: username=gctf;token=JDJhJDEwJC5kWEZrc2plYTlHY25zSEVWZzkzd3UwNHFCV0EwS1RmYTNnT2VlRTgvdzdRT3B6alFvajZX;
+Cookie: username=gctf;token=JDJhJDEwJHdUZmo1cWk4Q2JyMDZ6cG5OYnA1ZHVYdlV0T0xzOGRGeHYybGo4T3RIdnFCcjBqU0dNOW4u;
 
 ### start_problem
 POST {{host}}/user/start_problem
-Cookie: username=gctf;token=JDJhJDEwJC5kWEZrc2plYTlHY25zSEVWZzkzd3UwNHFCV0EwS1RmYTNnT2VlRTgvdzdRT3B6alFvajZX;
+Cookie: username=gctf;token=JDJhJDEwJHdUZmo1cWk4Q2JyMDZ6cG5OYnA1ZHVYdlV0T0xzOGRGeHYybGo4T3RIdnFCcjBqU0dNOW4u;
 content-type: application/json
 
 {
   "username":"gctf",
-  "token":"JDJhJDEwJC5kWEZrc2plYTlHY25zSEVWZzkzd3UwNHFCV0EwS1RmYTNnT2VlRTgvdzdRT3B6alFvajZX",
+  "token":"JDJhJDEwJHdUZmo1cWk4Q2JyMDZ6cG5OYnA1ZHVYdlV0T0xzOGRGeHYybGo4T3RIdnFCcjBqU0dNOW4u",
   "problem_id":1
 }
 
 ### UploadProblem
 POST {{host}}/admin/upload_problem
-Cookie: username=gctf;token=JDJhJDEwJC5kWEZrc2plYTlHY25zSEVWZzkzd3UwNHFCV0EwS1RmYTNnT2VlRTgvdzdRT3B6alFvajZX;
+Cookie: username=gctf;token=JDJhJDEwJHdUZmo1cWk4Q2JyMDZ6cG5OYnA1ZHVYdlV0T0xzOGRGeHYybGo4T3RIdnFCcjBqU0dNOW4u;
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
