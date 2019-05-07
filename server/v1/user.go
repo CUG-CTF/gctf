@@ -137,7 +137,7 @@ func Login(c *gin.Context) {
 	var lr loginReturn
 	var u User
 	u.Username = l.User
-	h,err:= GctfDataManage.Where("username =?",u.Username).Get(&u)
+	h, err := GctfDataManage.Where("username =?", u.Username).Get(&u)
 	if err != nil {
 		log.Println("user/login: error to get user info", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "login error"})
@@ -178,6 +178,7 @@ func Logout(c *gin.Context) {
 		Username string `json:"username"`
 		Token    string `json:"token"`
 	}{}
+	//todo: error handle
 	_ = c.BindJSON(&t)
 	_, ok := Sessions[t.Username]
 	if ok {
@@ -270,19 +271,19 @@ func SubmitFlag(c *gin.Context) {
 
 	} else {
 		if p.Flag == myflag.Flag {
-
 			if len(u.SolvedProblems) == 0 {
 				//第一次提交flag，不然就逗号开头了
 				u.SolvedProblems = myflag.Problem_id
-			}
-			solved := strings.Split(u.SolvedProblems, ",")
-			for _, x := range solved {
-				if x == myflag.Problem_id {
-					c.JSON(http.StatusBadRequest, gin.H{"msg": "This flag already submit!"})
-					return
+			} else {
+				solved := strings.Split(u.SolvedProblems, ",")
+				for _, x := range solved {
+					if x == myflag.Problem_id {
+						c.JSON(http.StatusBadRequest, gin.H{"msg": "This flag already submit!"})
+						return
+					}
 				}
+				u.SolvedProblems += "," + myflag.Problem_id
 			}
-			u.SolvedProblems += "," + myflag.Problem_id
 
 			//更新分数
 			u.Score += p.Value
