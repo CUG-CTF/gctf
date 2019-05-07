@@ -150,10 +150,19 @@ func startContainer(p model.Problems) (*docker.PortBinding, string,error) {
 }
 
 func GetProblemList(c *gin.Context) {
-	username, _ := c.Cookie("username")
 	if model.GCTFConfig.GCTF_MODE {
 		log.Println("attempt to read all problem!")
 		c.JSON(http.StatusForbidden, gin.H{"msg": "not allow"})
+		return
+	}
+	t := struct {
+		Token    string `json:"token"`
+		Username string `json:"username"`
+	}{}
+	err:=c.BindJSON(&t)
+	if err!=nil{
+		log.Println("user/GetProblemList error to bind json",err.Error())
+		c.JSON(http.StatusInternalServerError,gin.H{"msg":"bad request"})
 		return
 	}
 	type retData struct {
@@ -165,14 +174,14 @@ func GetProblemList(c *gin.Context) {
 	}
 	var problems []model.Problems
 	var retList []retData
-	err := model.GctfDataManage.Find(&problems)
+	err = model.GctfDataManage.Find(&problems)
 	if err != nil {
 		log.Println("problem/GetProblemList:error to get all problems", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to get problem list"})
 		return
 	}
 	//管理员就获得所有题目
-	if username == "gctf" {
+	if t.Username == "gctf" {
 		c.JSON(http.StatusOK, problems)
 		return
 	}

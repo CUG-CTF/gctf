@@ -98,3 +98,10 @@ content-type: application/json
   "username":"gctf",
   "problem_id":1
 }
+
+### GetProblemsList
+POST {{host}}/user/get_problem_list
+{
+  "token": "JDJhJDEwJFQvLnVkbFIwcDZablBJQktVSFJuN081d24vRkp5N2wxT1FnZlA2U0Fyci9oZFRTSkZhMzVl",
+  "username":"gctf"
+}

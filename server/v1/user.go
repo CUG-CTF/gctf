@@ -63,7 +63,7 @@ func checkSessionMiddleware(c *gin.Context) {
 	//TODO: redis
 	t := struct {
 		Token    string `json:"token"`
-		Usernmae string `json:"username"`
+		Username string `json:"username"`
 	}{}
 	//todo:gin 框架不能读两次body
 	data, err := c.GetRawData()
@@ -81,7 +81,7 @@ func checkSessionMiddleware(c *gin.Context) {
 
 	val, ok := Sessions[t.Usernmae]
 	if !ok {
-		c.Redirect(http.StatusMovedPermanently, "/login")
+		c.Redirect(http.StatusMovedPermanently, "/user/login")
 		c.Abort()
 	}
 	//TODO:string compare is slow
@@ -91,7 +91,7 @@ func checkSessionMiddleware(c *gin.Context) {
 			return
 		}
 	}
-	c.Redirect(http.StatusMovedPermanently, "/login")
+	c.Redirect(http.StatusMovedPermanently, "/user/login")
 	c.Abort()
 }
 
