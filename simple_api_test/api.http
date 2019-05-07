@@ -21,7 +21,13 @@ content-type: application/json
 //copy token
 ### userinfo
 POST {{host}}/user/userinfo
+content-type: application/json
 Cookie: username=gctf;token=JDJhJDEwJGNUNHR3eGY3N2N1WE42clBORm01NXV2c3htNzhFN01iOGZSbkVMZFkxam5rdUFVc0ZENmJL;
+
+{
+  "username": "gctf",
+  "token": "JDJhJDEwJGVob2dvT2EvUUNvR1cvTzVraHYubS5zRTVoaEZWUGtrVE80a3FLdnJ4ZTMyZ2d4ZE5rUnVT",
+}
 
 ### logout
 POST {{host}}/user/logout

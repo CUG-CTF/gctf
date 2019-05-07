@@ -14,7 +14,6 @@ import (
 )
 
 func UserInfo(c *gin.Context) {
-	username, _ := c.Cookie("username")
 	type retInfo struct {
 		Username       string    `json:"username" xorm:"unique pk"`
 		Email          string    `json:"email" xorm:"unique"`
@@ -24,7 +23,8 @@ func UserInfo(c *gin.Context) {
 	}
 	var u User
 	var ui retInfo
-	u.Username = username
+	err:=c.BindJSON(&u)
+	//todo : error handle
 	h, err := GctfDataManage.Get(&u)
 	if err != nil {
 		log.Println("User/UserInfo :error to query db(username) ", err)
