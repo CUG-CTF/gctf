@@ -62,8 +62,8 @@ func WriteSession(username, token string) {
 func checkSessionMiddleware(c *gin.Context) {
 	//TODO: redis
 	t := struct {
-		Usernmae string `json:"username"`
 		Token    string `json:"token"`
+		Usernmae string `json:"username"`
 	}{}
 	//todo:gin 框架不能读两次body
 	data, err := c.GetRawData()
@@ -99,8 +99,8 @@ func checkSessionMiddleware(c *gin.Context) {
 //TODO：检查是否为admin(查数据库)
 func checkAdmin(c *gin.Context) {
 	t := struct {
-		Usernmae string `json:"username"`
 		Token    string `json:"token"`
+		Usernmae string `json:"username"`
 	}{}
 	data, err := c.GetRawData()
 	if err != nil {

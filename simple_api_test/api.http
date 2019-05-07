@@ -1,5 +1,5 @@
 @host= http://ctf.cugapp.com:8081/v1
-@host= http://localhost:8081/v1
+# @host= http://localhost:8081/v1
 
 ###ping
 GET {{host}}/ping
@@ -27,7 +27,7 @@ content-type: application/json
 
 {
   "username": "gctf",
-  "token": "JDJhJDEwJG94b1NqY1MycWt5TEZNMnl3dFdZbi5lNWhpSjVKLjVsM1pkcUxGcjRaWXdBSG5la1NNWEYu"
+  "token": "JDJhJDEwJGpKdlhxMU5TMEdXMEFVekppZkZWVjc1ZZeDQ0RDJnTmxiZEYweEp3cVpLdzNuSkFBVjFp"
 }
 
 ### logout
