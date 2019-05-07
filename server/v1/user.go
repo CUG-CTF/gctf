@@ -28,7 +28,7 @@ func UserInfo(c *gin.Context) {
 	h, err := GctfDataManage.Get(&u)
 	if err != nil {
 		log.Println("User/UserInfo :error to query db(username) ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error cookies"})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error username"})
 		return
 	}
 	if !h {
@@ -151,8 +151,6 @@ func Login(c *gin.Context) {
 		}
 		lr.Token = base64.StdEncoding.EncodeToString(userToken)
 		WriteSession(l.User, lr.Token)
-		c.SetCookie("username", l.User, 36000, "/", GCTFConfig.GCTF_DOMAIN, false, true)
-		c.SetCookie("token", lr.Token, 36000, "/", GCTFConfig.GCTF_DOMAIN, false, true)
 		c.JSON(http.StatusOK, &lr)
 	} else {
 		c.JSON(http.StatusForbidden, gin.H{"msg": "login error"})
