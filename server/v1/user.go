@@ -75,11 +75,11 @@ func checkSessionMiddleware(c *gin.Context) {
 	if err != nil {
 		log.Println("checkSessionMiddleware:error to bind json! ", err.Error())
 	}
-	if len(t.Usernmae) == 0 || len(t.Token) == 0 {
+	if len(t.Username) == 0 || len(t.Token) == 0 {
 		log.Printf("checkSessionMiddleware: wrong request! %v", t)
 	}
 
-	val, ok := Sessions[t.Usernmae]
+	val, ok := Sessions[t.Username]
 	if !ok {
 		c.Redirect(http.StatusMovedPermanently, "/user/login")
 		c.Abort()
