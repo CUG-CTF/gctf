@@ -80,9 +80,9 @@ func StartProblem(c *gin.Context) {
 		return
 	}
 	//启动实例
-	problemAddr, err := startContainer(p)
+	problemAddr, id,err := startContainer(p)
 	//TODO:启动失败，应当删除题目实例
-	if err != nil {
+	if err != nil||len(id)==0 {
 		log.Println("user/StartProblem: error to start a  problem(name =" + p.Name + ") " + err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to start a problem"})
 		return
@@ -91,6 +91,8 @@ func StartProblem(c *gin.Context) {
 	up.Location = model.GCTFConfig.GCTF_DOCKERS[problemAddr.HostIP] + ":" + problemAddr.HostPort
 	up.UserId = u.Id
 	up.ProblemsId = p.Id
+	up.Expired=now
+	up.DockerID=id
 	_, err = model.GctfDataManage.Insert(&up)
 	if err != nil {
 		log.Printf("user/StartProblem error to insert to db: " + err.Error())
@@ -102,7 +104,7 @@ func StartProblem(c *gin.Context) {
 		"expired:":  now.Format("15:04:05"),
 	})
 }
-func startContainer(p model.Problems) (*docker.PortBinding, error) {
+func startContainer(p model.Problems) (*docker.PortBinding, string,error) {
 	//TODO:设置10分钟测试用，实际开发要替换为配置文件中设置的时间
 	context_timeout, _ := context.WithTimeout(context.Background(), 10*time.Minute)
 	//context_timeout,_:=context.WithTimeout(context.Background(),time.Duration(model.GCTFConfig.GCTF_PROBLEM_TIMEOUT)*time.Minute)
@@ -127,22 +129,23 @@ func startContainer(p model.Problems) (*docker.PortBinding, error) {
 	cli := model.GCTFDockerManager.GetDockerClient()
 	rsp, err := cli.CreateContainer(createOpt)
 	if err != nil {
-		return nil, err
+		return nil,"", err
 	}
 	err = cli.StartContainer(rsp.ID, nil)
 	if err != nil {
-		return nil, err
+		return nil,"", err
 	}
 	rsp, err = cli.InspectContainer(rsp.ID)
 	if err != nil {
-		return nil, err
+		return nil,"", err
 	}
+	id:=rsp.ID
 	ret := new(docker.PortBinding)
 	ret.HostIP = cli.Endpoint()
 	//TODO:目前仅支持TCP端口
 	port:=docker.Port(strconv.Itoa(p.Port)+"/tcp")
 	ret.HostPort = rsp.NetworkSettings.Ports[port][0].HostPort
-	return ret, err
+	return ret, id,err
 
 }
 

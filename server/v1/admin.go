@@ -167,13 +167,17 @@ func startBuildProblem() {
 }
 
 func buildUploadProblem(p model.Problems) {
+	//TODO:!似乎有问题
 	//TODO: context必须设置一个timeout
 	//TODO:在所有docker server上创建题目,构建后进行pull，两种方案:
 	// 1. master作为docker hub，pull from master
 	// 2. master docker hub 分离，pull from docker hub
 	var br model.BuildResult
 	f, err := os.Open("problems/" + p.Category + "/" + p.Name)
-
+	if err!=nil{
+		log.Println("admin/Upload_Problem:error to open problem!",err.Error())
+		return
+	}
 	//在数据库，文件层面已经做了一次problem name 重复check了，这里应该没必要做了吧- -
 	buildTimeLimit := model.GCTFConfig.GCTF_BUILD_TIME_LIMIT
 	dockerContext, _ := context.WithTimeout(context.Background(), time.Duration(buildTimeLimit)*time.Minute)
