@@ -1,4 +1,6 @@
 @host= http://ctf.cugapp.com:8081/v1
+@host= http://localhost:8081/v1
+
 ###ping
 GET {{host}}/ping
 ### register
@@ -22,11 +24,10 @@ content-type: application/json
 ### userinfo
 POST {{host}}/user/userinfo
 content-type: application/json
-Cookie: username=gctf;token=JDJhJDEwJGNUNHR3eGY3N2N1WE42clBORm01NXV2c3htNzhFN01iOGZSbkVMZFkxam5rdUFVc0ZENmJL;
 
 {
   "username": "gctf",
-  "token": "JDJhJDEwJGVob2dvT2EvUUNvR1cvTzVraHYubS5zRTVoaEZWUGtrVE80a3FLdnJ4ZTMyZ2d4ZE5rUnVT",
+  "token": "JDJhJDEwJG94b1NqY1MycWt5TEZNMnl3dFdZbi5lNWhpSjVKLjVsM1pkcUxGcjRaWXdBSG5la1NNWEYu"
 }
 
 ### logout

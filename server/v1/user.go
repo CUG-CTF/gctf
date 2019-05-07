@@ -1,11 +1,14 @@
 package v1
 
 import (
+	"bytes"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	. "github.com/CUG-CTF/gctf/server/model"
 	"github.com/gin-gonic/gin"
 	b "golang.org/x/crypto/bcrypt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -23,8 +26,9 @@ func UserInfo(c *gin.Context) {
 	}
 	var u User
 	var ui retInfo
-	err:=c.BindJSON(&u)
+	err := c.BindJSON(&u)
 	//todo : error handle
+	//todo:必须限定username，不然会查到别的数据
 	h, err := GctfDataManage.Get(&u)
 	if err != nil {
 		log.Println("User/UserInfo :error to query db(username) ", err)
@@ -57,16 +61,22 @@ func WriteSession(username, token string) {
 
 func checkSessionMiddleware(c *gin.Context) {
 	//TODO: redis
-	t:= struct {
+	t := struct {
 		Usernmae string `json:"username"`
-		Token string `json:"token"`
+		Token    string `json:"token"`
 	}{}
-	err:=c.BindJSON(&t)
-	if err!=nil{
-		log.Println("checkSessionMiddleware:error to bind json! ",err.Error())
+	//todo:gin 框架不能读两次body
+	data, err := c.GetRawData()
+	if err != nil {
+		log.Println("checkSessionMiddleware: error to read data!", err.Error())
 	}
-	if len(t.Usernmae)==0||len(t.Token)==0{
-		log.Printf("checkSessionMiddleware: wrong request! %v",t)
+	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
+	err = json.Unmarshal(data, &t)
+	if err != nil {
+		log.Println("checkSessionMiddleware:error to bind json! ", err.Error())
+	}
+	if len(t.Usernmae) == 0 || len(t.Token) == 0 {
+		log.Printf("checkSessionMiddleware: wrong request! %v", t)
 	}
 
 	val, ok := Sessions[t.Usernmae]
@@ -88,11 +98,16 @@ func checkSessionMiddleware(c *gin.Context) {
 //
 //TODO：检查是否为admin(查数据库)
 func checkAdmin(c *gin.Context) {
-	t:= struct {
+	t := struct {
 		Usernmae string `json:"username"`
-		Token string `json:"token"`
+		Token    string `json:"token"`
 	}{}
-	_=c.BindJSON(&t)
+	data, err := c.GetRawData()
+	if err != nil {
+		log.Println("checkSessionMiddleware: error to read data!", err.Error())
+	}
+	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
+	err = json.Unmarshal(data, &t)
 	if t.Usernmae != "gctf" {
 		c.JSON(http.StatusForbidden, gin.H{"msg": "you are not admin"})
 		c.Abort()
@@ -159,11 +174,11 @@ func Login(c *gin.Context) {
 }
 func Logout(c *gin.Context) {
 	//TODO: del session from K-V
-	t:= struct {
+	t := struct {
 		Username string `json:"username"`
-		Token string `json:"token"`
+		Token    string `json:"token"`
 	}{}
-	_=c.BindJSON(&t)
+	_ = c.BindJSON(&t)
 	_, ok := Sessions[t.Username]
 	if ok {
 		delete(Sessions, t.Username)
@@ -211,7 +226,7 @@ func SubmitFlag(c *gin.Context) {
 	err := c.BindJSON(&myflag)
 	if err != nil {
 		log.Println("user/SubmitFLag error to bind json", myflag, err)
-		c.JSON(http.StatusBadRequest, gin.H{"succeed": false,"msg": "error to submit you flag"})
+		c.JSON(http.StatusBadRequest, gin.H{"succeed": false, "msg": "error to submit you flag"})
 		return
 	}
 	var u User
@@ -220,12 +235,12 @@ func SubmitFlag(c *gin.Context) {
 	//前端试图去提交一个不存在的用户名，并绕过了token!
 	if !h {
 		log.Println("user/SubmitFLag: attempt to attack? no this user!", u)
-		c.JSON(http.StatusBadRequest, gin.H{"succeed": false,"msg": "error to submit you flag"})
+		c.JSON(http.StatusBadRequest, gin.H{"succeed": false, "msg": "error to submit you flag"})
 		return
 	}
 	if err != nil {
 		log.Println("user/SubmitFlag: error to query db(user)", err)
-		c.JSON(http.StatusBadRequest, gin.H{"succeed": false,"msg": "error to submit you flag"})
+		c.JSON(http.StatusBadRequest, gin.H{"succeed": false, "msg": "error to submit you flag"})
 		return
 	}
 	solvedProblems := strings.Split(u.SolvedProblems, ",")
@@ -241,12 +256,12 @@ func SubmitFlag(c *gin.Context) {
 	h, err = GctfDataManage.Get(&p)
 	if !h {
 		log.Println("user/SubmitFLag: attempt to attack? no this problem_ID!", u)
-		c.JSON(http.StatusBadRequest, gin.H{"succeed": false,"msg": "error to submit you flag"})
+		c.JSON(http.StatusBadRequest, gin.H{"succeed": false, "msg": "error to submit you flag"})
 		return
 	}
 	if err != nil {
 		log.Println("user/SubmitFlag: error to query db(problem)", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"succeed": false,"msg": "error to submit you flag"})
+		c.JSON(http.StatusInternalServerError, gin.H{"succeed": false, "msg": "error to submit you flag"})
 		return
 	}
 
