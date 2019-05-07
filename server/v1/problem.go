@@ -155,8 +155,8 @@ func GetProblemList(c *gin.Context) {
 	}
 	type retData struct {
 		Id          int64  `json:"id"`
-		Name        string `json:"nane"`
-		Description string `json:"decription"`
+		Name        string `json:"name"`
+		Description string `json:"description"`
 		Value       int    `json:"value"`
 		Category    string `json:"category"`
 	}
@@ -190,5 +190,38 @@ func GetProblemList(c *gin.Context) {
 //TODO:用户删除题目实例
 //删掉容器，清除数据库
 func UserDelProblem(c *gin.Context) {
+	ud:= struct {
+		Username string`json:"username"`
+		ProblemId int64 `json:"problem_id"`
+	}{}
+	err:=c.BindJSON(&ud)
+	if err!=nil{
+		log.Println("error to bind json:",err.Error())
+		c.JSON(http.StatusBadRequest,"error to bind json!")
+		return
+	}
+	var up model.UserProblems
+	up.ProblemsId=ud.ProblemId
+	h,err:=model.GctfDataManage.Get(&up)
+	if err!=nil{
+		log.Println("problem/UserDelProblem : database error ", err.Error())
+		c.JSON(http.StatusInternalServerError,gin.H{"msg":"error to search in db"})
+		return
+	}
+	if !h{
+		log.Println("problem/UserDelProblem attempt to del not exist problem! username: ",ud.Username)
+		c.JSON(http.StatusBadRequest,gin.H{"msg":"no this problem!"})
+		return
+	}
+	_,err=model.GctfDataManage.Delete(&up)
+	cli:=model.GCTFDockerManager.GetDockerClient()
+	err=cli.RemoveContainer(docker.RemoveContainerOptions{ID:up.DockerID,Force:true})
+	if err!=nil{
+		log.Println("problem/UserDelProblem error to del container! ",err.Error())
+		c.JSON(http.StatusInternalServerError,gin.H{"msg":"error to del container!"})
+		return
+	}
+	c.JSON(http.StatusOK,gin.H{"msg":"del container success!"})
+
 
 }

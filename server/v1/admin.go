@@ -219,12 +219,14 @@ func DeleteProblem(c *gin.Context) {
 		return
 	}
 	h,err:=model.GctfDataManage.Get(&pn)
+	_=h
 	if err!=nil{
 		c.JSON(http.StatusInternalServerError,"errro to search db!")
 		log.Println("admin/DeleteProblem: error to search db: "+err.Error())
 		return
 	}
 	cli:=model.GCTFDockerManager.GetDockerClient()
+	cli.RemoveContainer(docker.RemoveContainerOptions{})
 }
 
 //TODO:增加备份和恢复功能
