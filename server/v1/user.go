@@ -57,22 +57,26 @@ func WriteSession(username, token string) {
 
 func checkSessionMiddleware(c *gin.Context) {
 	//TODO: redis
-	username, err := c.Cookie("username")
-	if err != nil {
-		log.Println("check session username:" + err.Error())
+	t:= struct {
+		Usernmae string `json:"username"`
+		Token string `json:"token"`
+	}{}
+	err:=c.BindJSON(&t)
+	if err!=nil{
+		log.Println("checkSessionMiddleware:error to bind json! ",err.Error())
 	}
-	token, err := c.Cookie("token")
-	if err != nil {
-		log.Println("check session token:" + err.Error())
+	if len(t.Usernmae)==0||len(t.Token)==0{
+		log.Printf("checkSessionMiddleware: wrong request! %v",t)
 	}
-	val, ok := Sessions[username]
+
+	val, ok := Sessions[t.Usernmae]
 	if !ok {
 		c.Redirect(http.StatusMovedPermanently, "/login")
 		c.Abort()
 	}
 	//TODO:string compare is slow
 	for _, x := range val {
-		if token == x {
+		if t.Token == x {
 			c.Next()
 			return
 		}
@@ -84,8 +88,12 @@ func checkSessionMiddleware(c *gin.Context) {
 //
 //TODO：检查是否为admin(查数据库)
 func checkAdmin(c *gin.Context) {
-	username, _ := c.Cookie("username")
-	if username != "gctf" {
+	t:= struct {
+		Usernmae string `json:"username"`
+		Token string `json:"token"`
+	}{}
+	_=c.BindJSON(&t)
+	if t.Usernmae != "gctf" {
 		c.JSON(http.StatusForbidden, gin.H{"msg": "you are not admin"})
 		c.Abort()
 	}
@@ -153,13 +161,14 @@ func Login(c *gin.Context) {
 }
 func Logout(c *gin.Context) {
 	//TODO: del session from K-V
-	username, _ := c.Cookie("username")
-	if username == "" {
-		c.Redirect(http.StatusMovedPermanently, "/login")
-	}
-	_, ok := Sessions[username]
+	t:= struct {
+		Username string `json:"username"`
+		Token string `json:"token"`
+	}{}
+	_=c.BindJSON(&t)
+	_, ok := Sessions[t.Username]
 	if ok {
-		delete(Sessions, username)
+		delete(Sessions, t.Username)
 	}
 	c.JSON(http.StatusOK, gin.H{"msg": "logout ok"})
 
