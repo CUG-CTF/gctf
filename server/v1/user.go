@@ -137,7 +137,7 @@ func Login(c *gin.Context) {
 	var lr loginReturn
 	var u User
 	u.Username = l.User
-	h, err := GctfDataManage.Get(&u)
+	h,err:= GctfDataManage.Where("username =?",u.Username).Get(&u)
 	if err != nil {
 		log.Println("user/login: error to get user info", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "login error"})

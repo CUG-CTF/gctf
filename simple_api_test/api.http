@@ -26,26 +26,28 @@ POST {{host}}/user/userinfo
 content-type: application/json
 
 {
-  "username": "gctf",
-  "token": "JDJhJDEwJGpKdlhxMU5TMEdXMEFVekppZkZWVjc1ZZeDQ0RDJnTmxiZEYweEp3cVpLdzNuSkFBVjFp"
+  "token": "JDJhJDEwJFByYjh3alFTQzg2NzhRZEhxZEUxVHVuU0JOTlZxaTdjV3J1dTJoYWNFbm1oRXlSaXowMm42",
+  "username": "gctf"  
 }
 
 ### logout
 POST {{host}}/user/logout
-Cookie: username=gctf;token=JDJhJDEwJGNUNHR3eGY3N2N1WE42clBORm01NXV2c3htNzhFN01iOGZSbkVMZFkxam5rdUFVc0ZENmJL;
 
+{
+  "token": "JDJhJDEwJFByYjh3alFTQzg2NzhRZEhxZEUxVHVuU0JOTlZxaTdjV3J1dTJoYWNFbm1oRXlSaXowMm42",
+  "username": "gctf"
+}
 ### get_problem_list
 POST {{host}}/user/get_problem_list
 Cookie: username=gctf;token=JDJhJDEwJGNUNHR3eGY3N2N1WE42clBORm01NXV2c3htNzhFN01iOGZSbkVMZFkxam5rdUFVc0ZENmJL;
 
 ### start_problem
 POST {{host}}/user/start_problem
-Cookie: username=gctf;token=JDJhJDEwJGNUNHR3eGY3N2N1WE42clBORm01NXV2c3htNzhFN01iOGZSbkVMZFkxam5rdUFVc0ZENmJL;
 content-type: application/json
 
 {
   "username":"gctf",
-  "token":"JDJhJDEwJGNUNHR3eGY3N2N1WE42clBORm01NXV2c3htNzhFN01iOGZSbkVMZFkxam5rdUFVc0ZENmJL",
+  "token":"JDJhJDEwJFQvLnVkbFIwcDZablBJQktVSFJuN081d24vRkp5N2wxT1FnZlA2U0Fyci9oZFRTSkZhMzVl",
   "problem_id":1
 }
 
@@ -92,6 +94,7 @@ Cookie: username=gctf;token=JDJhJDEwJGNUNHR3eGY3N2N1WE42clBORm01NXV2c3htNzhFN01i
 content-type: application/json
 
 {
+  "token": "JDJhJDEwJFQvLnVkbFIwcDZablBJQktVSFJuN081d24vRkp5N2wxT1FnZlA2U0Fyci9oZFRTSkZhMzVl",
   "username":"gctf",
   "problem_id":1
 }
