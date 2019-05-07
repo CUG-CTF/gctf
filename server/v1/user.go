@@ -204,7 +204,7 @@ func SubmitFlag(c *gin.Context) {
 	err := c.BindJSON(&myflag)
 	if err != nil {
 		log.Println("user/SubmitFLag error to bind json", myflag, err)
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to submit you flag"})
+		c.JSON(http.StatusBadRequest, gin.H{"succeed": false,"msg": "error to submit you flag"})
 		return
 	}
 	var u User
@@ -213,12 +213,12 @@ func SubmitFlag(c *gin.Context) {
 	//前端试图去提交一个不存在的用户名，并绕过了token!
 	if !h {
 		log.Println("user/SubmitFLag: attempt to attack? no this user!", u)
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to submit you flag"})
+		c.JSON(http.StatusBadRequest, gin.H{"succeed": false,"msg": "error to submit you flag"})
 		return
 	}
 	if err != nil {
 		log.Println("user/SubmitFlag: error to query db(user)", err)
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to submit you flag"})
+		c.JSON(http.StatusBadRequest, gin.H{"succeed": false,"msg": "error to submit you flag"})
 		return
 	}
 	solvedProblems := strings.Split(u.SolvedProblems, ",")
@@ -234,12 +234,12 @@ func SubmitFlag(c *gin.Context) {
 	h, err = GctfDataManage.Get(&p)
 	if !h {
 		log.Println("user/SubmitFLag: attempt to attack? no this problem_ID!", u)
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "error to submit you flag"})
+		c.JSON(http.StatusBadRequest, gin.H{"succeed": false,"msg": "error to submit you flag"})
 		return
 	}
 	if err != nil {
 		log.Println("user/SubmitFlag: error to query db(problem)", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to submit you flag"})
+		c.JSON(http.StatusInternalServerError, gin.H{"succeed": false,"msg": "error to submit you flag"})
 		return
 	}
 
@@ -256,7 +256,7 @@ func SubmitFlag(c *gin.Context) {
 			solved := strings.Split(u.SolvedProblems, ",")
 			for _, x := range solved {
 				if x == myflag.Problem_id {
-					c.JSON(http.StatusBadRequest, gin.H{"mgs": "This flag already submit!"})
+					c.JSON(http.StatusBadRequest, gin.H{"msg": "This flag already submit!"})
 					return
 				}
 			}
