@@ -3,6 +3,10 @@
 
 ###ping
 GET {{host}}/ping
+
+### get_users_rank
+GET {{host}}/get_users_rank
+
 ### register
 POST {{host}}/register
 content-type: application/json
@@ -122,3 +126,4 @@ POST {{host}}/user/get_problem_list
   "token": "JDJhJDEwJE9oOTl0UmVRV3Q1Zndudkg5WWdueGVhcTR0QjVqeVBWL0xtR0dyRTlpdXRneE1Zd3lkS2Zh",
   "username":"test1"
 }
+

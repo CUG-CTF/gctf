@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"sort"
 )
 
 /*
@@ -35,6 +36,10 @@ func GetUsersRank(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to get user score"})
 		return
 	}
+	//排序
+	sort.Slice(userName_scores, func(i, j int) bool {
+		return userName_scores[i]["score"]>userName_scores[j]["score"]
+	})
 	c.JSON(http.StatusOK, userName_scores)
 }
 
