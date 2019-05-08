@@ -1,5 +1,5 @@
-@host= http://ctf.cugapp.com:8081/v1
-# @host= http://localhost:8081/v1
+#@host= http://ctf.cugapp.com:8081/v1
+@host= http://localhost:8081/v1
 
 ###ping
 GET {{host}}/ping
@@ -8,8 +8,8 @@ POST {{host}}/register
 content-type: application/json
 
 {
-  "username":"gctf",
-  "password":"gctfpasswd"
+  "username":"test1",
+  "password":"test"
 }
 
 ### login
@@ -17,8 +17,8 @@ POST {{host}}/login
 content-type: application/json
 
 {
-  "username":"gctf",
-  "password":"gctfpasswd"
+  "username":"test1",
+  "password":"test"
 }
 //copy token
 ### userinfo
@@ -26,7 +26,7 @@ POST {{host}}/user/userinfo
 content-type: application/json
 
 {
-  "token": "JDJhJDEwJEU1ekFNV240dGJJSm53RkljYWpZYXVDbnNGRmIyeWJaaS9HR3hZTDFjeVFKaXpFUTR3Q3ZH",
+  "token": "JDJhJDEwJGRYbE1aM1dFTG04WENxMlhOVmQzcWVWZEc4dnUvbUg2WUE0WGN3eHhCbjVuVDUyNWFERmIu",
   "username": "gctf"  
 }
 
@@ -34,7 +34,7 @@ content-type: application/json
 POST {{host}}/user/logout
 content-type: application/json
 {
-  "token": "JDJhJDEwJEU1ekFNV240dGJJSm53RkljYWpZYXVDbnNGRmIyeWJaaS9HR3hZTDFjeVFKaXpFUTR3Q3ZH",
+  "token": "JDJhJDEwJGRYbE1aM1dFTG04WENxMlhOVmQzcWVWZEc4dnUvbUg2WUE0WGN3eHhCbjVuVDUyNWFERmIu",
   "username": "gctf"
 }
 ### get_problem_list
@@ -42,7 +42,7 @@ POST {{host}}/user/get_problem_list
 content-type: application/json
 
 {
-  "token": "JDJhJDEwJEU1ekFNV240dGJJSm53RkljYWpZYXVDbnNGRmIyeWJaaS9HR3hZTDFjeVFKaXpFUTR3Q3ZH",
+  "token": "JDJhJDEwJGRYbE1aM1dFTG04WENxMlhOVmQzcWVWZEc4dnUvbUg2WUE0WGN3eHhCbjVuVDUyNWFERmIu",
   "username": "gctf"
 }
 ### start_problem
@@ -51,7 +51,7 @@ content-type: application/json
 
 {
   "username":"gctf",
-  "token":"JDJhJDEwJEU1ekFNV240dGJJSm53RkljYWpZYXVDbnNGRmIyeWJaaS9HR3hZTDFjeVFKaXpFUTR3Q3ZH",
+  "token":"JDJhJDEwJGRYbE1aM1dFTG04WENxMlhOVmQzcWVWZEc4dnUvbUg2WUE0WGN3eHhCbjVuVDUyNWFERmIu",
   "problem_id":1
 }
 
@@ -60,7 +60,7 @@ POST {{host}}/admin/upload_problem
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 {
-  "token": "JDJhJDEwJEU1ekFNV240dGJJSm53RkljYWpZYXVDbnNGRmIyeWJaaS9HR3hZTDFjeVFKaXpFUTR3Q3ZH",
+  "token": "JDJhJDEwJGRYbE1aM1dFTG04WENxMlhOVmQzcWVWZEc4dnUvbUg2WUE0WGN3eHhCbjVuVDUyNWFERmIu",
   "username": "gctf"
 }
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -100,7 +100,7 @@ POST {{host}}/user/del_problem
 content-type: application/json
 
 {
-  "token": "JDJhJDEwJEU1ekFNV240dGJJSm53RkljYWpZYXVDbnNGRmIyeWJaaS9HR3hZTDFjeVFKaXpFUTR3Q3ZH",
+  "token": "JDJhJDEwJGRYbE1aM1dFTG04WENxMlhOVmQzcWVWZEc4dnUvbUg2WUE0WGN3eHhCbjVuVDUyNWFERmIu",
   "username":"gctf",
   "problem_id":1
 }
@@ -110,15 +110,15 @@ POST {{host}}/user/submit_flag
 content-type: application/json
 
 {
-  "token": "JDJhJDEwJEU1ekFNV240dGJJSm53RkljYWpZYXVDbnNGRmIyeWJaaS9HR3hZTDFjeVFKaXpFUTR3Q3ZH",
-  "username":"gctf",
-  "problem_id":2,
-  "flag":"234"
+  "token": "JDJhJDEwJE9oOTl0UmVRV3Q1Zndudkg5WWdueGVhcTR0QjVqeVBWL0xtR0dyRTlpdXRneE1Zd3lkS2Zh",
+  "username":"test1",
+  "problem_id":"1",
+  "flag":"gctf{2333}"
 }
 ### GetProblemsList
 POST {{host}}/user/get_problem_list
 
 {
-  "token": "JDJhJDEwJEU1ekFNV240dGJJSm53RkljYWpZYXVDbnNGRmIyeWJaaS9HR3hZTDFjeVFKaXpFUTR3Q3ZH",
-  "username":"gctf"
+  "token": "JDJhJDEwJE9oOTl0UmVRV3Q1Zndudkg5WWdueGVhcTR0QjVqeVBWL0xtR0dyRTlpdXRneE1Zd3lkS2Zh",
+  "username":"test1"
 }

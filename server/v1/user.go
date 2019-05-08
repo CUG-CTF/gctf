@@ -29,7 +29,7 @@ func UserInfo(c *gin.Context) {
 	err := c.BindJSON(&u)
 	//todo : error handle
 	//todo:必须限定username，不然会查到别的数据
-	h, err := GctfDataManage.Get(&u)
+	h, err := GctfDataManage.Where("username =?", u.Username).Get(&u)
 	if err != nil {
 		log.Println("User/UserInfo :error to query db(username) ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error username"})
@@ -219,7 +219,7 @@ func GetScore(c *gin.Context) {
 
 func SubmitFlag(c *gin.Context) {
 	type submitFlag struct {
-		Username   string `json:"usernmae"`
+		Username   string `json:"username"`
 		Problem_id string `json:"problem_id"`
 		Flag       string `json:"flag"`
 	}
@@ -232,7 +232,7 @@ func SubmitFlag(c *gin.Context) {
 	}
 	var u User
 	u.Username = myflag.Username
-	h, err := GctfDataManage.Get(&u)
+	h, err := GctfDataManage.Where("username =?", u.Username).Get(&u)
 	//前端试图去提交一个不存在的用户名，并绕过了token!
 	if !h {
 		log.Println("user/SubmitFLag: attempt to attack? no this user!", u)
@@ -254,7 +254,7 @@ func SubmitFlag(c *gin.Context) {
 	var p Problems
 	p.Id, _ = strconv.ParseInt(myflag.Problem_id, 10, 64)
 	//查database去拿到正确的flag
-	h, err = GctfDataManage.Get(&p)
+	h, err = GctfDataManage.ID(p.Id).Get(&p)
 	if !h {
 		log.Println("user/SubmitFLag: attempt to attack? no this problem_ID!", u)
 		c.JSON(http.StatusBadRequest, gin.H{"succeed": false, "msg": "error to submit you flag"})
@@ -287,7 +287,7 @@ func SubmitFlag(c *gin.Context) {
 
 			//更新分数
 			u.Score += p.Value
-			n, err := GctfDataManage.Cols("score", "solved_problems").Update(&u)
+			n, err := GctfDataManage.Where("username =?", u.Username).Cols("score", "solved_problems").Update(&u)
 			if n != 1 || err != nil {
 				log.Println("user/SubmitFlag: error to update user db or update user data not only one! ", err)
 				c.JSON(http.StatusInternalServerError, gin.H{"msg": "server internal error"})
