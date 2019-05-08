@@ -81,7 +81,7 @@ func checkSessionMiddleware(c *gin.Context) {
 
 	val, ok := Sessions[t.Username]
 	if !ok {
-		c.Redirect(http.StatusMovedPermanently, "/user/login")
+		c.JSON(http.StatusBadRequest,gin.H{"msg":"please login!"})
 		c.Abort()
 	}
 	//TODO:string compare is slow
@@ -91,7 +91,7 @@ func checkSessionMiddleware(c *gin.Context) {
 			return
 		}
 	}
-	c.Redirect(http.StatusMovedPermanently, "/user/login")
+	c.JSON(http.StatusBadRequest, gin.H{"msg":"token expired"})
 	c.Abort()
 }
 
