@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strconv"
 )
 
 /*
@@ -38,7 +39,9 @@ func GetUsersRank(c *gin.Context) {
 	}
 	//排序
 	sort.Slice(userName_scores, func(i, j int) bool {
-		return userName_scores[i]["score"]>userName_scores[j]["score"]
+		a,_:=strconv.Atoi(userName_scores[i]["score"])
+		b,_:=strconv.Atoi(userName_scores[j]["score"])
+		return a>b
 	})
 	c.JSON(http.StatusOK, userName_scores)
 }
