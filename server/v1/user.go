@@ -244,13 +244,13 @@ func SubmitFlag(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"succeed": false, "msg": "error to submit you flag"})
 		return
 	}
-	solvedProblems := strings.Split(u.SolvedProblems, ",")
-	for _, solvedProblem := range solvedProblems {
-		if myflag.Problem_id == solvedProblem {
-			c.JSON(http.StatusOK, gin.H{"msg": "You submit already"})
-			return
-		}
-	}
+	//solvedProblems := strings.Split(u.SolvedProblems, ",")
+	//for _, solvedProblem := range solvedProblems {
+	//	if myflag.Problem_id == solvedProblem {
+	//		c.JSON(http.StatusOK, gin.H{"msg": "You submit already"})
+	//		return
+	//	}
+	//}
 	var p Problems
 	p.Id, _ = strconv.ParseInt(myflag.Problem_id, 10, 64)
 	//查database去拿到正确的flag
