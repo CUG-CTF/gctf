@@ -191,6 +191,7 @@ func GetProblemList(c *gin.Context) {
 		return
 	}
 	ru.Categories=[]string{"pwn","web","crypto","re","misc"}
+	ra.Categories=[]string{"pwn","web","crypto","re","misc"}
 	ra.ProblemList=problems
 	//管理员就获得所有题目
 	if t.Username == "gctf" {
