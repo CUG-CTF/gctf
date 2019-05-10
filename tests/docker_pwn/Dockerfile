@@ -26,13 +26,13 @@ RUN mkdir /home/ctf/bin && \
     cp /bin/ls /home/ctf/bin && \
     cp /bin/cat /home/ctf/bin
 
-COPY ./ctf.xinetd /etc/xinetd.d/ctf
-COPY ./start.sh /start.sh
+COPY ctf.xinetd /etc/xinetd.d/ctf
+COPY start.sh /start.sh
 RUN echo "Blocked by ctf_xinetd" > /etc/banner_fail
 
 RUN chmod +x /start.sh
 
-COPY ./bin/ /home/ctf/
+COPY bin /home/ctf/
 RUN chown -R root:ctf /home/ctf && \
     chmod -R 750 /home/ctf && \
     chmod 740 /home/ctf/flag
