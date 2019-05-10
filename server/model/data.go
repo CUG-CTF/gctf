@@ -25,16 +25,16 @@ type User struct {
 // Problem table, should Location is fixed?
 //TODO:unique invalid?
 type Problems struct {
-	Id          int64  `xorm:"autoincr pk 'id'"`
-	Name        string `xorm:"unique"`
-	Description string // Problem Description
-	Value       int    // score
-	Category    string
-	Hidden      bool                   // should be problem hide?
-	Location    string `xorm:"unique"` // saved physical position
-	Flag        string                 //默认flag，(不开启动态flag)
-	Scale       int `xorm:"default 0"` // score scale when each answer submit
-	Port        int `xorm:"default 0"` //内部端口
+	Id          int64  `xorm:"autoincr pk 'id'" json:"id" `
+	Name        string `xorm:"unique" json:"name"`
+	Description string `json:"description"` // Problem Description
+	Value       int    `json:"value"`       // score
+	Category    string `json:"category"`
+	Hidden      bool   `json:"hidden"`                 // should be problem hide?
+	Location    string `xorm:"unique"`                 // saved physical position
+	Flag        string `json:"flag"`                   //默认flag，(不开启动态flag)
+	Scale       int    `xorm:"default 0" json:"scale"` // score scale when each answer submit
+	Port        int    `xorm:"default 0" json:"port"`  //内部端口
 }
 
 // 每启动一个problem 实例，就写入一条数据，如果flag为动态，那么就要填入Flag字段
@@ -70,15 +70,15 @@ type Teams struct {
 }
 
 type GCTFConfigStruct struct {
-	GCTF_PORT             string   `json:"port"`
-	GCTF_DEBUG            bool     `json:"debug"`
-	GCTF_MODE             bool     `json:"mode"` //true is contest
-	GCTF_PROBLEM_TIMEOUT  int      `json:"problem_create_timeout"`
-	GCTF_EXPLIRED_TIME    int      `json:"expired_time"` // 过期时间，单位分钟
-	GCTF_BUILD_TIME_LIMIT int      `json:"build_time_limit"`
-	GCTF_DB_DRIVER        string   `json:"database_type"`
-	GCTF_DB_STRING        string   `json:"database_address"`
-	GCTF_DOMAIN           string   `json:"domain_name"`
+	GCTF_PORT             string            `json:"port"`
+	GCTF_DEBUG            bool              `json:"debug"`
+	GCTF_MODE             bool              `json:"mode"` //true is contest
+	GCTF_PROBLEM_TIMEOUT  int               `json:"problem_create_timeout"`
+	GCTF_EXPLIRED_TIME    int               `json:"expired_time"` // 过期时间，单位分钟
+	GCTF_BUILD_TIME_LIMIT int               `json:"build_time_limit"`
+	GCTF_DB_DRIVER        string            `json:"database_type"`
+	GCTF_DB_STRING        string            `json:"database_address"`
+	GCTF_DOMAIN           string            `json:"domain_name"`
 	GCTF_DOCKERS          map[string]string `json:"docker_servers"`
 }
 type DockerManager interface {
