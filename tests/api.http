@@ -37,6 +37,7 @@ content-type: application/json
 ### logout
 POST {{host}}/user/logout
 content-type: application/json
+
 {
   "token": "JDJhJDEwJEtOM2lxV2ZGWTgyMFNJL3YySkpxVWVnSml0NDFkd093M3k4Q2EwTWFoamdraVh5YW1ZaUZx",
   "username": "gctf"
@@ -114,11 +115,12 @@ POST {{host}}/user/submit_flag
 content-type: application/json
 
 {
-  "token": "JDJhJDEwJEtOM2lxV2ZGWTgyMFNJL3YySkpxVWVnSml0NDFkd093M3k4Q2EwTWFoamdraVh5YW1ZaUZx",
+  "token": "JDJhJDEwJDJrd05haVJZY3ZzeUxnNThiSzNFRWVBMklqM0dGMlBkUXR5Smh2ZHptZW44Q0NKUGE1ZGdL",
   "username":"test1",
-  "problem_id":"1",
-  "flag":"gctf{2333}"
+  "flag":"1234",
+  "problem_id":"1"
 }
+
 ### GetProblemsList
 POST {{host}}/user/get_problem_list
 

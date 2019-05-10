@@ -2,6 +2,7 @@
   "port": "8081",
   "debug": true,
   "mode": false,
+  "categories": ["pwn","web","crypto","re","misc"],
   "expired_time": 15,
   "build_time_limit": 5,
   "problem_create_timeout": 1,

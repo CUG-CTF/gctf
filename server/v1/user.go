@@ -83,6 +83,7 @@ func checkSessionMiddleware(c *gin.Context) {
 	if !ok {
 		c.JSON(http.StatusBadRequest,gin.H{"msg":"please login!"})
 		c.Abort()
+		return
 	}
 	//TODO:string compare is slow
 	for _, x := range val {

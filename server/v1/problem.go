@@ -165,15 +165,19 @@ func GetProblemList(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError,gin.H{"msg":"bad request"})
 		return
 	}
-	type retData struct {
+	type problemList struct {
 		Id          int64  `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		Value       int    `json:"value"`
 		Category    string `json:"category"`
 	}
+	type retData struct {
+		Categories []string `json:"categories"`
+		ProblemList []problemList `json:"problem_list"`
+	} 
 	var problems []model.Problems
-	var retList []retData
+	var retList []problemList
 	err = model.GctfDataManage.Find(&problems)
 	if err != nil {
 		log.Println("problem/GetProblemList:error to get all problems", err)
@@ -187,7 +191,7 @@ func GetProblemList(c *gin.Context) {
 	}
 	for _, x := range problems {
 		if !x.Hidden {
-			retList = append(retList, retData{
+			retList = append(retList, problemList{
 				x.Id,
 				x.Name,
 				x.Description,
@@ -196,7 +200,10 @@ func GetProblemList(c *gin.Context) {
 			})
 		}
 	}
-	c.JSON(http.StatusOK, retList)
+	var r retData
+	r.Categories=[]string{"pwn","web","crypto","re","misc"}
+	r.ProblemList=retList
+	c.JSON(http.StatusOK, r)
 }
 
 //TODO:用户删除题目实例
