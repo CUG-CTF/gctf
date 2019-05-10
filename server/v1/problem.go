@@ -172,10 +172,16 @@ func GetProblemList(c *gin.Context) {
 		Value       int    `json:"value"`
 		Category    string `json:"category"`
 	}
-	type retData struct {
+	type retUserData struct {
 		Categories []string `json:"categories"`
 		ProblemList []problemList `json:"problem_list"`
-	} 
+	}
+	type retAdminData struct {
+		Categories []string `json:"categories"`
+		ProblemList []model.Problems `json:"problem_list"`
+	}
+	var ru retUserData
+	var ra retAdminData
 	var problems []model.Problems
 	var retList []problemList
 	err = model.GctfDataManage.Find(&problems)
@@ -184,9 +190,11 @@ func GetProblemList(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to get problem list"})
 		return
 	}
+	ru.Categories=[]string{"pwn","web","crypto","re","misc"}
+	ra.ProblemList=problems
 	//管理员就获得所有题目
 	if t.Username == "gctf" {
-		c.JSON(http.StatusOK, problems)
+		c.JSON(http.StatusOK, ra)
 		return
 	}
 	for _, x := range problems {
@@ -200,10 +208,8 @@ func GetProblemList(c *gin.Context) {
 			})
 		}
 	}
-	var r retData
-	r.Categories=[]string{"pwn","web","crypto","re","misc"}
-	r.ProblemList=retList
-	c.JSON(http.StatusOK, r)
+	ru.ProblemList=retList
+	c.JSON(http.StatusOK, ru)
 }
 
 //TODO:用户删除题目实例
