@@ -12,8 +12,9 @@ POST {{host}}/register
 content-type: application/json
 
 {
-  "username":"test1",
-  "password":"test"
+  "username":"aaa",
+  "email":"aa@qq.com",
+  "password":"123"
 }
 
 ### login
@@ -21,8 +22,8 @@ POST {{host}}/login
 content-type: application/json
 
 {
-  "username":"test1",
-  "password":"test"
+  "username":"cjd",
+  "password":""
 }
 //copy token
 ### userinfo

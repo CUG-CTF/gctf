@@ -2,6 +2,8 @@ package v1
 
 import (
 	"context"
+	"crypto/md5"
+	"fmt"
 	"github.com/CUG-CTF/gctf/server/model"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gin-gonic/gin"
@@ -19,8 +21,8 @@ func StartProblem(c *gin.Context) {
 	now := time.Now().Add(time.Duration(expired_time) * time.Minute)
 	// POST DATA
 	type UserStartProblem struct {
-		Username   string `json:"username"`
 		Token      string `json:"token"`
+		Username   string `json:"username"`
 		Problem_id int64  `json:"problem_id"`
 	}
 	var sp UserStartProblem
@@ -52,7 +54,7 @@ func StartProblem(c *gin.Context) {
 	}
 
 	var up model.UserProblems
-	up.ProblemsId = sp.Problem_id
+	up.ProblemId = sp.Problem_id
 	up.UserId = u.Id
 
 	//查一下是不是已经创建题目实例了
@@ -80,19 +82,35 @@ func StartProblem(c *gin.Context) {
 		return
 	}
 	//启动实例
-	problemAddr, id,err := startContainer(p)
-	//TODO:启动失败，应当删除题目实例
+	problemAddr, id,cli,err := startContainer(p)
 	if err != nil||len(id)==0 {
 		log.Println("user/StartProblem: error to start a  problem(name =" + p.Name + ") " + err.Error())
+		_=cli.RemoveContainer(docker.RemoveContainerOptions{ID:id,Force:true})
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error to start a problem"})
 		return
+	}
+	//生成动态flag
+
+	//todo:fmt性能有点低,必须动态flag？
+	randomBytes:=[]byte(fmt.Sprintf("%x",time.Now().UnixNano()))
+	randomBytes=append(randomBytes,[]byte(u.Username)... )
+	randomFlag:=fmt.Sprintf("%x",md5.Sum(randomBytes))
+	//todo:可以更改的前缀
+	randomFlag="gctf{"+randomFlag+"}"
+	_,err=cli.CreateExec(docker.CreateExecOptions{Container:id,Cmd:[]string{"sh","/changeFlag.sh", randomFlag}})
+	if err!=nil{
+		log.Printf("user/StartProblem error to random flag!"+err.Error()+"%v /n",sp)
+		randomFlag=""
+		err=nil
 	}
 	//返回题目地址
 	up.Location = model.GCTFConfig.GCTF_DOCKERS[problemAddr.HostIP] + ":" + problemAddr.HostPort
 	up.UserId = u.Id
-	up.ProblemsId = p.Id
+	up.ProblemId = p.Id
 	up.Expired=now
 	up.DockerID=id
+	up.Flag=randomFlag
+	//Where("user_id=?",up.UserId).Where("problem_id=?",p.Id).
 	_, err = model.GctfDataManage.Insert(&up)
 	if err != nil {
 		log.Printf("user/StartProblem error to insert to db: " + err.Error())
@@ -101,10 +119,10 @@ func StartProblem(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"host_ip":  model.GCTFConfig.GCTF_DOCKERS[problemAddr.HostIP],
 		"host_port": problemAddr.HostPort,
-		"expired:":  now.Format("15:04:05"),
+		"expired":now.Format("15:04:05"),
 	})
 }
-func startContainer(p model.Problems) (*docker.PortBinding, string,error) {
+func startContainer(p model.Problems) (*docker.PortBinding, string,*docker.Client,error) {
 	//TODO:设置10分钟测试用，实际开发要替换为配置文件中设置的时间
 	context_timeout, _ := context.WithTimeout(context.Background(), 10*time.Minute)
 	//context_timeout,_:=context.WithTimeout(context.Background(),time.Duration(model.GCTFConfig.GCTF_PROBLEM_TIMEOUT)*time.Minute)
@@ -129,15 +147,15 @@ func startContainer(p model.Problems) (*docker.PortBinding, string,error) {
 	cli := model.GCTFDockerManager.GetDockerClient()
 	rsp, err := cli.CreateContainer(createOpt)
 	if err != nil {
-		return nil,"", err
+		return nil,"",cli, err
 	}
 	err = cli.StartContainer(rsp.ID, nil)
 	if err != nil {
-		return nil,"", err
+		return nil,"",cli, err
 	}
 	rsp, err = cli.InspectContainer(rsp.ID)
 	if err != nil {
-		return nil,"", err
+		return nil,"",cli, err
 	}
 	id:=rsp.ID
 	ret := new(docker.PortBinding)
@@ -145,8 +163,7 @@ func startContainer(p model.Problems) (*docker.PortBinding, string,error) {
 	//TODO:目前仅支持TCP端口
 	port:=docker.Port(strconv.Itoa(p.Port)+"/tcp")
 	ret.HostPort = rsp.NetworkSettings.Ports[port][0].HostPort
-	return ret, id,err
-
+	return ret, id,cli,err
 }
 
 func GetProblemList(c *gin.Context) {
@@ -217,6 +234,7 @@ func GetProblemList(c *gin.Context) {
 //删掉容器，清除数据库
 func UserDelProblem(c *gin.Context) {
 	ud:= struct {
+		Token string `json:"token"`
 		Username string`json:"username"`
 		ProblemId int64 `json:"problem_id"`
 	}{}
@@ -227,7 +245,7 @@ func UserDelProblem(c *gin.Context) {
 		return
 	}
 	var up model.UserProblems
-	up.ProblemsId=ud.ProblemId
+	up.ProblemId =ud.ProblemId
 	h,err:=model.GctfDataManage.Get(&up)
 	if err!=nil{
 		log.Println("problem/UserDelProblem : database error ", err.Error())
@@ -240,6 +258,7 @@ func UserDelProblem(c *gin.Context) {
 		return
 	}
 	_,err=model.GctfDataManage.Delete(&up)
+	//todo:!client polling!
 	cli:=model.GCTFDockerManager.GetDockerClient()
 	err=cli.RemoveContainer(docker.RemoveContainerOptions{ID:up.DockerID,Force:true})
 	if err!=nil{

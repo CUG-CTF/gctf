@@ -81,7 +81,7 @@ func checkSessionMiddleware(c *gin.Context) {
 
 	val, ok := Sessions[t.Username]
 	if !ok {
-		c.JSON(http.StatusBadRequest,gin.H{"msg":"please login!"})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "please login!"})
 		c.Abort()
 		return
 	}
@@ -92,7 +92,7 @@ func checkSessionMiddleware(c *gin.Context) {
 			return
 		}
 	}
-	c.JSON(http.StatusBadRequest, gin.H{"msg":"token expired"})
+	c.JSON(http.StatusBadRequest, gin.H{"msg": "token expired"})
 	c.Abort()
 }
 
@@ -194,6 +194,7 @@ func Register(c *gin.Context) {
 	// username,password,email need
 	err := c.BindJSON(&newUser)
 	if err != nil {
+		log.Printf("user/register error to bind json! %v", newUser)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "bad request" + err.Error()})
 		return
 	}
@@ -253,11 +254,25 @@ func SubmitFlag(c *gin.Context) {
 	//	}
 	//}
 	var p Problems
+	var up UserProblems
 	p.Id, _ = strconv.ParseInt(myflag.Problem_id, 10, 64)
+	up.ProblemId = p.Id
+	up.UserId = u.Id
 	//查database去拿到正确的flag
-	h, err = GctfDataManage.ID(p.Id).Get(&p)
+	h, err = GctfDataManage.Id(p.Id).Get(&p)
 	if !h {
 		log.Println("user/SubmitFLag: attempt to attack? no this problem_ID!", u)
+		c.JSON(http.StatusBadRequest, gin.H{"succeed": false, "msg": "error to submit you flag"})
+		return
+	}
+	if err != nil {
+		log.Println("user/SubmitFlag: error to query db(problem)", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"succeed": false, "msg": "error to submit you flag"})
+		return
+	}
+	h, err = GctfDataManage.Where("user_id=?", up.UserId).Where("problem_id=?", p.Id).Get(&up)
+	if !h {
+		log.Println("user/SubmitFLag: this problem_ID!", u)
 		c.JSON(http.StatusBadRequest, gin.H{"succeed": false, "msg": "error to submit you flag"})
 		return
 	}
@@ -271,7 +286,11 @@ func SubmitFlag(c *gin.Context) {
 		//Todo:在比赛模式中，应该重新计算所有人的分数
 
 	} else {
-		if p.Flag == myflag.Flag {
+		realFlag := up.Flag
+		if len(up.Flag) == 0 {
+			realFlag=p.Flag
+		}
+		if realFlag == myflag.Flag {
 			if len(u.SolvedProblems) == 0 {
 				//第一次提交flag，不然就逗号开头了
 				u.SolvedProblems = myflag.Problem_id
@@ -279,7 +298,7 @@ func SubmitFlag(c *gin.Context) {
 				solved := strings.Split(u.SolvedProblems, ",")
 				for _, x := range solved {
 					if x == myflag.Problem_id {
-						c.JSON(http.StatusBadRequest, gin.H{"msg": "This flag already submit!"})
+						c.JSON(http.StatusOK, gin.H{"succeed": false, "msg": "This flag already submit!"})
 						return
 					}
 				}
@@ -291,7 +310,7 @@ func SubmitFlag(c *gin.Context) {
 			n, err := GctfDataManage.Where("username =?", u.Username).Cols("score", "solved_problems").Update(&u)
 			if n != 1 || err != nil {
 				log.Println("user/SubmitFlag: error to update user db or update user data not only one! ", err)
-				c.JSON(http.StatusInternalServerError, gin.H{"msg": "server internal error"})
+				c.JSON(http.StatusInternalServerError, gin.H{"succeed": false, "msg": "server internal error"})
 				return
 			}
 			c.JSON(http.StatusOK, gin.H{"succeed": true, "msg": "flag correct!"})

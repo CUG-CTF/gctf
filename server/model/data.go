@@ -39,13 +39,13 @@ type Problems struct {
 
 // 每启动一个problem 实例，就写入一条数据，如果flag为动态，那么就要填入Flag字段
 type UserProblems struct {
-	Id         int64 `xorm:"autoincr pk 'id'"`
-	UserId     int64 `xorm:"unique(user_problem)"` //foreignkey gctf_user.id
-	Location   string                              // problem net location
-	Flag       string
-	ProblemsId int64 `xorm:"unique(user_problem)"` //foreignkey gctf_problems.id
-	DockerID   string                              //docker id
-	Expired    time.Time                           //过期时间
+	Id        int64 `xorm:"autoincr pk 'id'"`
+	UserId    int64 `xorm:"unique(user_problem)"` //foreignkey gctf_user.id
+	Location  string                              // problem net location
+	Flag      string
+	ProblemId int64 `xorm:"unique(user_problem)"` //foreignkey gctf_problems.id
+	DockerID  string                              //docker id
+	Expired   time.Time                           //过期时间
 }
 
 type Hints struct {
@@ -57,7 +57,7 @@ type Hints struct {
 
 //type Tag struct {
 //	Id         int64 `xorm:"autoincr pk 'id'"`
-//	ProblemsId int64 //foreignkey gctf_problems.id
+//	ProblemId int64 //foreignkey gctf_problems.id
 //	Tag        string
 //}
 
