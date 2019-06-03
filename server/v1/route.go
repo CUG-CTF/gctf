@@ -35,7 +35,6 @@ func ConfigRoute(r *gin.RouterGroup) {
 		//set user Problem one by one
 		adminRoute.POST("/set_user_problem", SetUserProblem)
 		adminRoute.POST("/random_all_users_problem", RandomAllUsersProblem)
-
 		adminRoute.POST("/change_gctf_mode", ChangeGCTFMode)
 
 		adminRoute.POST("/upload_problem", UploadProblem)
