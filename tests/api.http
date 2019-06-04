@@ -1,4 +1,4 @@
-@host= http://ctf.cugapp.com:8081/v1
+@host= http://localhost:8081/v1
 #@host= http://localhost:8081/v1
 
 ###ping
@@ -30,7 +30,7 @@ POST {{host}}/user/userinfo
 content-type: application/json
 
 {
-  "token": "JDJhJDEwJDVwc3F0bGlRSS9lZUpkdXFIUE1KZC5UL3NtbGEydHpsa2dCNjg4dGU4dGZnNXhPZ0l4ZzJP",
+  "token": "JDJhJDEwJGhraHZ0b1J1d3dtLmxBd0xWb0Z0NU8uTHh3YjJieVJ4YzVGSUtuTlF5VkpPeEE0em5MUS51",
   "username": "gctf"  
 }
 
@@ -39,7 +39,7 @@ POST {{host}}/user/logout
 content-type: application/json
 
 {
-  "token": "JDJhJDEwJDVwc3F0bGlRSS9lZUpkdXFIUE1KZC5UL3NtbGEydHpsa2dCNjg4dGU4dGZnNXhPZ0l4ZzJP",
+  "token": "JDJhJDEwJGhraHZ0b1J1d3dtLmxBd0xWb0Z0NU8uTHh3YjJieVJ4YzVGSUtuTlF5VkpPeEE0em5MUS51",
   "username": "gctf"
 }
 ### get_problem_list
@@ -47,7 +47,7 @@ POST {{host}}/user/get_problem_list
 content-type: application/json
 
 {
-  "token": "JDJhJDEwJDVwc3F0bGlRSS9lZUpkdXFIUE1KZC5UL3NtbGEydHpsa2dCNjg4dGU4dGZnNXhPZ0l4ZzJP",
+  "token": "JDJhJDEwJGhraHZ0b1J1d3dtLmxBd0xWb0Z0NU8uTHh3YjJieVJ4YzVGSUtuTlF5VkpPeEE0em5MUS51",
   "username": "gctf"
 }
 ### start_problem
@@ -56,7 +56,7 @@ content-type: application/json
 
 {
   "username":"gctf",
-  "token":"JDJhJDEwJDVwc3F0bGlRSS9lZUpkdXFIUE1KZC5UL3NtbGEydHpsa2dCNjg4dGU4dGZnNXhPZ0l4ZzJP",
+  "token":"JDJhJDEwJGhraHZ0b1J1d3dtLmxBd0xWb0Z0NU8uTHh3YjJieVJ4YzVGSUtuTlF5VkpPeEE0em5MUS51",
   "problem_id":1
 }
 
@@ -65,7 +65,7 @@ POST {{host}}/admin/upload_problem
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 {
-  "token": "JDJhJDEwJDVwc3F0bGlRSS9lZUpkdXFIUE1KZC5UL3NtbGEydHpsa2dCNjg4dGU4dGZnNXhPZ0l4ZzJP",
+  "token": "JDJhJDEwJGhraHZ0b1J1d3dtLmxBd0xWb0Z0NU8uTHh3YjJieVJ4YzVGSUtuTlF5VkpPeEE0em5MUS51",
   "username": "gctf"
 }
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -105,7 +105,7 @@ POST {{host}}/user/del_problem
 content-type: application/json
 
 {
-  "token": "JDJhJDEwJDVwc3F0bGlRSS9lZUpkdXFIUE1KZC5UL3NtbGEydHpsa2dCNjg4dGU4dGZnNXhPZ0l4ZzJP",
+  "token": "JDJhJDEwJGhraHZ0b1J1d3dtLmxBd0xWb0Z0NU8uTHh3YjJieVJ4YzVGSUtuTlF5VkpPeEE0em5MUS51",
   "username":"gctf",
   "problem_id":1
 }
@@ -115,7 +115,7 @@ POST {{host}}/user/submit_flag
 content-type: application/json
 
 {
-  "token": "JDJhJDEwJDVwc3F0bGlRSS9lZUpkdXFIUE1KZC5UL3NtbGEydHpsa2dCNjg4dGU4dGZnNXhPZ0l4ZzJP",
+  "token": "JDJhJDEwJGhraHZ0b1J1d3dtLmxBd0xWb0Z0NU8uTHh3YjJieVJ4YzVGSUtuTlF5VkpPeEE0em5MUS51",
   "username":"gctf",
   "flag":"gctf{372df252ed262f2c6144e248ba1d3e2d}",
   "problem_id":"1"
@@ -125,7 +125,7 @@ content-type: application/json
 POST {{host}}/user/get_problem_list
 
 {
-  "token": "JDJhJDEwJDVwc3F0bGlRSS9lZUpkdXFIUE1KZC5UL3NtbGEydHpsa2dCNjg4dGU4dGZnNXhPZ0l4ZzJP",
+  "token": "JDJhJDEwJGhraHZ0b1J1d3dtLmxBd0xWb0Z0NU8uTHh3YjJieVJ4YzVGSUtuTlF5VkpPeEE0em5MUS51",
   "username":"gctf"
 }
 
